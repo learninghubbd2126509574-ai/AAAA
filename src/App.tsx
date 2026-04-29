@@ -146,13 +146,13 @@ export default function App() {
 
         <div className="flex-1 flex flex-row relative overflow-hidden">
           
-          {/* SIDE-BY-SIDE SLIM COMMENTS (একক কলাম) */}
-          <div className="hidden lg:flex w-[16%] h-full flex-col py-4 px-3 border-r border-white/5 bg-black/60 relative shrink-0">
+          {/* SIDE-BY-SIDE SLIM COMMENTS (একক কলাম) - UPDATED FOR BETTER CENTERED & LARGER LOOK */}
+          <div className="hidden lg:flex w-[20%] h-full flex-col py-4 px-6 border-r border-white/5 bg-black/60 relative shrink-0">
              <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
-
+ 
              <div className="flex-1 overflow-hidden">
-              <div className="flex flex-col gap-2 h-full"> 
+              <div className="flex flex-col gap-3 h-full"> 
                 <AnimatePresence mode="popLayout" initial={false}>
                   {activeComments.map((comment, i) => (
                     <motion.div
@@ -162,13 +162,13 @@ export default function App() {
                       exit={{ opacity: 0, scale: 0.9, y: -20 }}
                       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      {/* TECH SLIM CARD - FULL WIDTH */}
-                      <div className="bg-white/[0.04] border border-white/5 py-1.5 px-3 rounded-lg backdrop-blur-md">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-1 h-1 rounded-full bg-blue-500" />
-                          <span className="text-[9px] font-black text-blue-400 capitalize whitespace-nowrap overflow-hidden text-ellipsis leading-none">{comment.name}</span>
+                      {/* TECH SLIM CARD - LARGER & BETTER PADDING */}
+                      <div className="bg-white/[0.04] border border-white/5 py-2 px-4 rounded-xl backdrop-blur-md">
+                        <div className="flex items-center gap-2.5 mb-1.5">
+                          <div className="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]" />
+                          <span className="text-[10px] font-black text-blue-400 capitalize whitespace-nowrap overflow-hidden text-ellipsis">{comment.name}</span>
                         </div>
-                        <p className="text-[10px] text-slate-200 font-medium leading-tight italic tracking-tight">{comment.text}</p>
+                        <p className="text-[12px] text-slate-200 font-medium leading-tight italic tracking-tight">{comment.text}</p>
                       </div>
                     </motion.div>
                   ))}
