@@ -1,11 +1,17 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { Share2, Users, MessageSquare, Play, Activity, Globe, Disc, ChevronLeft, Monitor, Zap, Shield, Cpu, Network, BarChart3, Scan, Hexagon, Database, Radio, Waves, Terminal, Cpu as Processor, GitBranch, HardDrive, Target, Layers } from 'lucide-react';
+import { 
+  ChevronLeft, Play, Users, Shield, MessageSquare, 
+  Cpu, Zap, Globe, Hexagon, Network, Disc, Target, 
+  Radio, Layers, Activity, Smartphone, Monitor, Database
+} from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 const MEETINGS = [
   { id: "LWq4lIP3Oek", title: "11 Meeting", time: "11:00 AM", desc: "Digital Strategy Hub", color: "from-blue-600 to-indigo-600" },
   { id: "D_NV8qU7ZUo", title: "3 Meeting", time: "03:00 PM", desc: "Corporate Insights Hub", color: "from-indigo-600 to-purple-600" },
-  { id: "KWhhOZd5RYU", title: "7 meeting", time: "07:00 PM", desc: "Evening Townhall Session", color: "from-blue-700 to-blue-500" }
+  { id: "bmo39684cyE", title: "6:30 meeting", time: "06:30 PM", desc: "Evening Tech Insights", color: "from-cyan-600 to-blue-600" },
+  { id: "KWhhOZd5RYU", title: "7 meeting", time: "07:00 PM", desc: "Evening Townhall Session", color: "from-blue-700 to-blue-500" },
+  { id: "vn2-RcxKWoo", title: "7:30 meeting", time: "07:30 PM", desc: "Night Strategy Sync", color: "from-indigo-700 to-purple-700" }
 ];
 
 const COMMENTS_DATA = [
@@ -69,43 +75,102 @@ export default function App() {
 
   useEffect(() => {
     if (!selectedMeeting) return;
-    const interval = setInterval(() => {
+    
+    const commentsInterval = setInterval(() => {
       setActiveComments(prev => {
-        const nextBatch = [
-          COMMENTS_DATA[commentIndexRef.current % COMMENTS_DATA.length]
-        ];
+        const nextComment = COMMENTS_DATA[commentIndexRef.current % COMMENTS_DATA.length];
         commentIndexRef.current += 1;
-        return [...prev.slice(1), ...nextBatch];
+        return [...prev.slice(1), nextComment];
       });
-    }, 3000);
-    return () => clearInterval(interval);
+    }, 2500);
+    
+    return () => {
+      clearInterval(commentsInterval);
+    };
   }, [selectedMeeting]);
 
   if (!selectedMeeting) {
     return (
-      <div className="relative w-full h-screen bg-[#02040a] flex flex-col items-center justify-center overflow-hidden font-sans select-none text-white p-6">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-1/4 -right-1/4 w-[1000px] h-[1000px] border border-blue-600/10 rounded-full" />
+      <div className="relative w-full min-h-screen bg-[#02040a] flex flex-col items-center overflow-hidden font-sans select-none text-white selection:bg-blue-500/30">
+        {/* Background Ambient Effects */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.1, 0.15, 0.1],
+              rotate: [0, 90, 0]
+            }} 
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-1/4 -left-1/4 w-[100vw] h-[100vw] bg-gradient-to-br from-blue-600/20 via-transparent to-indigo-600/10 rounded-full blur-[120px]" 
+          />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
         </div>
-        <div className="relative z-10 w-full max-w-7xl flex flex-col gap-12">
-          <header className="text-center space-y-4">
-            <h1 className="text-6xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">UNITY EARNING</h1>
-            <p className="text-slate-500 font-bold text-[13px] tracking-[1.5em] uppercase">Digital Learning Ecosystem</p>
-          </header>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
-            {MEETINGS.map((m) => (
-              <div key={m.id} onClick={() => setSelectedMeeting(m)} className="cursor-pointer group relative bg-[#0B1124] rounded-[40px] border border-white/5 p-12 hover:border-blue-500/50 transition-all h-[440px] flex flex-col justify-between overflow-hidden shadow-2xl">
-                <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${m.color} opacity-5 blur-3xl`} />
-                <div className="space-y-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                     <Play className="text-blue-500 group-hover:text-white group-hover:fill-white" size={28} />
-                  </div>
-                  <h3 className="text-5xl font-black tracking-tight">{m.title}</h3>
-                  <p className="text-[14px] text-slate-500 uppercase font-black tracking-widest leading-relaxed opacity-60 italic">{m.desc}</p>
-                </div>
-                <span className="text-blue-400 font-black text-xs uppercase tracking-[0.4em] relative z-10">Connect Hub →</span>
+
+        <div className="relative z-10 w-full max-w-7xl flex flex-col gap-16 py-20 px-6">
+          <header className="text-center space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h1 className="text-7xl lg:text-[120px] font-display font-bold tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/20">
+                UNITY <span className="text-blue-500">EARNING</span>
+              </h1>
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <div className="h-px w-12 bg-white/10" />
+                <p className="text-blue-500 font-bold text-[11px] tracking-[1em] uppercase">Ecosystem of Intelligence</p>
+                <div className="h-px w-12 bg-white/10" />
               </div>
+            </motion.div>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {MEETINGS.map((m, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                onClick={() => setSelectedMeeting(m)} 
+                className="group relative cursor-pointer"
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[32px] opacity-0 group-hover:opacity-20 blur-xl transition-opacity" />
+                <div className="relative bg-[#0B1124]/40 backdrop-blur-xl rounded-[32px] border border-white/5 p-10 hover:border-blue-500/30 transition-all h-[420px] flex flex-col justify-between overflow-hidden shadow-2xl">
+                  <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${m.color} opacity-[0.03] blur-3xl group-hover:opacity-10 transition-opacity`} />
+                  
+                  <div className="space-y-8 relative z-10">
+                    <div className="flex items-start justify-between">
+                      <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-blue-600/20 group-hover:border-blue-500/50 transition-all duration-500">
+                         <Play className="text-white fill-white/20 group-hover:fill-white transition-all" size={24} />
+                      </div>
+                      <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                        <span className="text-[10px] font-bold text-slate-400 font-mono">{m.time}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h3 className="text-4xl font-display font-bold tracking-tight group-hover:text-blue-400 transition-colors line-clamp-2 leading-tight">{m.title}</h3>
+                      <p className="text-[13px] text-slate-400/60 font-medium tracking-wide leading-relaxed line-clamp-2">{m.desc}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between relative z-10">
+                    <div className="flex items-center gap-2">
+                       <div className="flex -space-x-2">
+                          {[...Array(3)].map((_, i) => (
+                            <div key={i} className="w-6 h-6 rounded-full bg-slate-800 border border-[#02040a]" />
+                          ))}
+                       </div>
+                       <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">120+ Active</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-400 font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                      Join Stream
+                      <Zap size={12} className="fill-blue-400" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -114,61 +179,82 @@ export default function App() {
   }
 
   return (
-    <div className="relative w-full h-screen bg-[#02040a] flex flex-col items-center justify-center overflow-hidden font-sans select-none text-white">
+    <div className="relative w-full h-screen bg-[#02040a] flex flex-col items-center justify-center overflow-hidden font-sans select-none text-white selection:bg-blue-500/30 font-sans">
       <div className="relative z-10 w-full h-full flex flex-col">
         
         {/* SMALL COMPACT HEADER - TOP LEFT BRANDING */}
-        <div className="h-14 px-6 flex items-center justify-between border-b border-white/5 bg-black/60 backdrop-blur-3xl shrink-0">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setSelectedMeeting(null)} className="p-1.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
-              <ChevronLeft size={16} className="text-blue-400" />
+        <div className="h-16 px-8 flex items-center justify-between border-b border-white/5 bg-black/60 backdrop-blur-3xl shrink-0">
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={() => setSelectedMeeting(null)} 
+              className="group p-2 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-blue-500/50 transition-all duration-300"
+            >
+              <ChevronLeft size={18} className="text-blue-400 group-hover:-translate-x-0.5 transition-transform" />
             </button>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-red-600 shadow-[0_0_8px_#ef4444] animate-pulse" />
-                <h1 className="text-white text-[11px] font-black tracking-widest leading-none">{selectedMeeting.title} live</h1>
+              <div className="flex items-center gap-2.5">
+                <div className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600 shadow-[0_0_10px_#ef4444]"></span>
+                </div>
+                <h1 className="text-white text-xs font-display font-bold tracking-[0.2em] uppercase leading-none">{selectedMeeting.title} <span className="text-red-500 animate-pulse">LIVE</span></h1>
               </div>
-              <p className="text-blue-500/40 font-black text-[6.5px] tracking-[0.3em] uppercase mt-1 leading-none">Unity Earning Hub Bangladesh</p>
+              <p className="text-blue-500/50 font-bold text-[8px] tracking-[0.4em] uppercase mt-1.5 leading-none font-mono">Internal Protocol // Hub Bangladesh</p>
             </div>
           </div>
-          <div className="flex items-center gap-10 opacity-30">
-             <div className="flex items-center gap-2">
-                <Users size={12} className="text-blue-500" />
-                <span className="text-[9px] font-black uppercase tracking-widest">2.4K Participating</span>
+          <div className="flex items-center gap-12">
+             <div className="hidden sm:flex items-center gap-3">
+                <div className="flex -space-x-2">
+                   {[...Array(3)].map((_, i) => (
+                      <div key={i} className="w-5 h-5 rounded-full bg-slate-800 border border-black shadow-lg" />
+                   ))}
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400"><span className="text-white">2.4K</span> Watching</span>
              </div>
-             <div className="h-6 w-px bg-white/5" />
-             <div className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2 px-3 py-1 bg-blue-600/5 rounded border border-blue-500/20">
-                <Shield size={12} className="text-blue-500" />
-                <span>SECURE_NODE_9X</span>
+             <div className="h-8 w-px bg-white/5" />
+             <div className="flex items-center gap-3 px-4 py-1.5 bg-blue-600/10 rounded-xl border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]">
+                <Shield size={14} className="text-blue-500" />
+                <span className="text-[10px] font-bold font-mono text-blue-400 tracking-wider">NODE_9X_SECURE</span>
              </div>
           </div>
         </div>
 
         <div className="flex-1 flex flex-row relative overflow-hidden">
           
-          {/* SIDE-BY-SIDE SLIM COMMENTS (একক কলাম) - UPDATED FOR BETTER CENTERED & LARGER LOOK */}
-          <div className="hidden lg:flex w-[20%] h-full flex-col py-4 px-6 border-r border-white/5 bg-black/60 relative shrink-0">
-             <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
-             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
+          {/* VERTICAL STREAMING COMMENTS - PROFESSIONAL TICKER */}
+          <div className="hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r border-white/5 bg-[#02040a]/40 backdrop-blur-3xl relative shrink-0">
+             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
+             <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
  
-             <div className="flex-1 overflow-hidden">
-              <div className="flex flex-col gap-3 h-full"> 
-                <AnimatePresence mode="popLayout" initial={false}>
+             <div className="mb-6 flex items-center justify-between relative z-20">
+               <div className="flex items-center gap-2">
+                 <MessageSquare size={14} className="text-blue-500" />
+                 <h2 className="text-[11px] font-display font-bold uppercase tracking-[0.2em] text-white/80">Live Discussion</h2>
+               </div>
+               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
+             </div>
+
+             <div className="flex-1 overflow-hidden relative">
+                <div className="flex flex-col gap-4 h-full relative"> 
+                  <AnimatePresence mode="popLayout" initial={false}>
                   {activeComments.map((comment, i) => (
                     <motion.div
-                      key={`${commentIndexRef.current + i}`}
-                      initial={{ opacity: 0, y: 40, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                      key={`comment-${commentIndexRef.current - activeComments.length + i}`}
+                      layout
+                      initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9, x: 20, filter: "blur(8px)" }}
+                      transition={{ 
+                        opacity: { duration: 0.4 },
+                        layout: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
+                      }}
                     >
-                      {/* TECH SLIM CARD - LARGER & BETTER PADDING */}
-                      <div className="bg-white/[0.04] border border-white/5 py-2 px-4 rounded-xl backdrop-blur-md">
-                        <div className="flex items-center gap-2.5 mb-1.5">
-                          <div className="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]" />
-                          <span className="text-[10px] font-black text-blue-400 capitalize whitespace-nowrap overflow-hidden text-ellipsis">{comment.name}</span>
+                      <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl backdrop-blur-2xl hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-bold text-blue-400 capitalize tracking-wide">{comment.name}</span>
+                          <span className="text-[8px] text-white/10 font-mono italic">0.4s</span>
                         </div>
-                        <p className="text-[12px] text-slate-200 font-medium leading-tight italic tracking-tight">{comment.text}</p>
+                        <p className="text-[13px] text-slate-300 font-medium leading-relaxed tracking-tight">{comment.text}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -177,143 +263,157 @@ export default function App() {
             </div>
           </div>
 
-          {/* CINEMATIC VIDEO CENTER - OPTIMIZED ALIGNMENT */}
-          <div className="flex-1 flex flex-col justify-center pt-8 pb-10 px-14">
-            <div className="relative w-full max-w-[94%] mx-auto flex flex-col justify-center">
-              <div className="relative shadow-[0_60px_150px_-30px_rgba(37,99,235,0.4)]">
-                <div className="absolute -inset-20 bg-blue-600/5 blur-[120px] opacity-20 pointer-events-none" />
-                <iframe
-                  className="w-full aspect-video bg-black rounded-[48px] border-[12px] border-[#131b2d] ring-1 ring-white/10"
-                  src={`https://www.youtube.com/embed/${selectedMeeting.id}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1`}
-                  allowFullScreen
-                />
-              </div>
-              <div className="mt-5 flex justify-center opacity-10">
-                 <div className="flex items-center gap-12 text-[7.5px] font-black uppercase tracking-[1.5em]">
-                    <span>Global Encryption Hub Bangladesh</span>
+          {/* CINEMATIC VIDEO CENTER - MAXIMIZED FOCUS */}
+          <div className="flex-1 flex flex-col justify-center pt-4 pb-12 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.05)_0%,transparent_70%)]">
+            
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+               <motion.div 
+                 animate={{ opacity: [0.1, 0.2, 0.1] }}
+                 transition={{ duration: 4, repeat: Infinity }}
+                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-blue-500/5 blur-[120px] rounded-full" 
+               />
+            </div>
+
+            <div className="relative w-full h-full max-w-[100%] mx-auto flex flex-col justify-center">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative group h-full flex flex-col justify-center"
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[56px] opacity-10 group-hover:opacity-20 blur-xl transition-opacity duration-700" />
+                <div className="relative shadow-[0_80px_200px_-40px_rgba(37,99,235,0.4)] transition-transform duration-1000 hover:scale-[1.005]">
+                  <iframe
+                    className="w-full aspect-video bg-black rounded-[56px] border-[14px] border-[#131b2d] ring-1 ring-white/10"
+                    src={`https://www.youtube.com/embed/${selectedMeeting.id}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1`}
+                    allowFullScreen
+                  />
+                  
+                  {/* Floating Tech Corners */}
+                  <div className="absolute top-8 left-8 flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest font-mono">REC // {selectedMeeting.time}</span>
+                  </div>
+                </div>
+              </motion.div>
+              
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center gap-12 opacity-20 pointer-events-none">
+                 <div className="flex items-center gap-6 text-[9px] font-mono text-blue-500 tracking-[1.5em] uppercase">
+                    <div className="h-px w-20 bg-gradient-to-r from-transparent to-blue-500" />
+                    <span>ENCRYPTION_LINK_ACTIVE</span>
+                    <div className="h-px w-20 bg-gradient-to-l from-transparent to-blue-500" />
                  </div>
               </div>
             </div>
           </div>
 
-          {/* ADVANCED TECH VISUALS (SMALLER PANEL FOR LARGER VIDEO) */}
-          <div className="hidden lg:flex w-[14%] h-full flex-col items-center justify-between py-10 px-4 border-l border-white/5 bg-black/40 shrink-0 relative overflow-hidden">
+          {/* ADVANCED TECH VISUALS */}
+          <div className="hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-12 px-6 border-l border-white/5 bg-black/40 backdrop-blur-3xl shrink-0 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-transparent opacity-20" />
             
-            {/* SCANNING LASER LAYER */}
-            <motion.div 
-               animate={{ y: ["-20%", "120%", "-20%"] }} 
-               transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-               className="absolute inset-x-0 w-full h-[1.5px] bg-blue-500/40 z-20 shadow-[0_0_20px_#2563eb]" />
-
             <div className="w-full space-y-12 relative z-10">
-               
                {/* Core Tech Spinner */}
-               <div className="flex flex-col items-center gap-6 text-center">
+               <div className="flex flex-col items-center gap-8 text-center pt-4">
                   <div className="relative">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                      className="w-28 h-28 border-2 border-dashed border-blue-500/10 rounded-full flex items-center justify-center">
-                        <motion.div animate={{ rotate: -720 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                           className="w-20 h-20 border border-blue-500/20 rounded-full flex items-center justify-center">
-                           <Layers size={18} className="text-blue-500/20" />
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                      className="w-32 h-32 border border-dashed border-blue-500/20 rounded-full flex items-center justify-center">
+                        <motion.div animate={{ rotate: -720 }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                           className="w-24 h-24 border border-blue-500/10 rounded-full flex items-center justify-center">
+                           <Hexagon size={24} className="text-blue-500/20" />
                         </motion.div>
                     </motion.div>
-                    <motion.div animate={{ opacity: [0.1, 1, 0.1], scale: [0.95, 1.05, 0.95] }} transition={{ duration: 2, repeat: Infinity }}
-                        className="absolute inset-0 flex items-center justify-center">
-                        <Processor size={28} className="text-blue-600 fill-blue-600" />
+                    <motion.div 
+                      animate={{ 
+                        opacity: [0.4, 1, 0.4],
+                        scale: [1, 1.1, 1],
+                        filter: ["drop-shadow(0 0 5px rgba(37,99,235,0.4))", "drop-shadow(0 0 20px rgba(37,99,235,0.8))", "drop-shadow(0 0 5px rgba(37,99,235,0.4))"]
+                      }} 
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                        <Cpu size={32} className="text-blue-500 fill-blue-500/20" />
                     </motion.div>
                   </div>
-                  <div className="p-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent w-full" />
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white font-bold tracking-[0.3em] uppercase underline decoration-blue-500/50 underline-offset-4">Unity_Core</p>
+                    <p className="text-[7px] text-blue-500 font-mono tracking-widest uppercase">System Stabilized</p>
+                  </div>
                </div>
 
-               {/* Live Scanners / Binary Feed */}
-               <div className="space-y-6">
+               {/* Live Scanners */}
+               <div className="space-y-8">
                  {[...Array(3)].map((_, i) => (
-                    <div key={`tech-${i}`} className="space-y-3 opacity-30 relative">
-                       <div className="flex justify-between text-[6.5px] font-black uppercase tracking-[0.3em] italic">
-                          <span>Circuit_{i}</span>
-                          <span className="text-blue-500">Active</span>
+                    <div key={`tech-${i}`} className="space-y-4 opacity-50">
+                       <div className="flex justify-between text-[7px] font-bold uppercase tracking-widest">
+                          <span className="text-slate-500">Flux_{i+1}</span>
+                          <span className="text-blue-500 font-mono">{(89.2 + Math.random() * 10).toFixed(1)}%</span>
                        </div>
-                       <div className="h-0.5 bg-white/5 w-full relative overflow-hidden rounded-full">
-                          <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ duration: 1.5 + i * 0.4, repeat: Infinity }}
-                             className="h-full w-1/4 bg-blue-600/80 shadow-[0_0_12px_rgba(37,99,235,1)]" />
-                       </div>
-                       <div className="flex justify-between text-[5px] font-mono text-blue-500/40 leading-none mt-1">
-                         <motion.span animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 1 }}>01011001</motion.span>
-                         <span>SYNC_HUB</span>
-                         <motion.span animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 1, delay: 0.5 }}>11010011</motion.span>
+                       <div className="h-1 bg-white/[0.03] w-full relative overflow-hidden rounded-full border border-white/5">
+                          <motion.div 
+                            animate={{ x: ["-100%", "100%"] }} 
+                            transition={{ duration: 2 + i, repeat: Infinity, ease: "linear" }}
+                            className="h-full w-1/3 bg-gradient-to-r from-transparent via-blue-500 to-transparent" 
+                          />
                        </div>
                     </div>
                  ))}
                </div>
 
-               {/* Waveform Design Component */}
-               <div className="space-y-6">
-                 <div className="flex items-center justify-center gap-1.5 px-4 opacity-10 h-12 border border-white/5 rounded-2xl bg-white/[0.02]">
-                   {[...Array(18)].map((_, i) => (
-                      <motion.div key={i}
-                        animate={{ height: [4, 28, 8, 32, 4] }}
-                        transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.08 }}
-                        className="w-[2px] bg-blue-500 rounded-full" />
-                   ))}
-                 </div>
-
-                 {/* Extra Node Visuals */}
-                 <div className="grid grid-cols-2 gap-4 opacity-20">
-                    <div className="space-y-1.5">
-                       <p className="text-[6px] font-black text-slate-500 uppercase tracking-widest leading-none">Global Link</p>
-                       <div className="flex items-center gap-2">
-                          <Radio size={12} className="text-blue-500" />
-                          <div className="h-px flex-1 bg-white/10" />
-                       </div>
-                    </div>
-                    <div className="space-y-1.5">
-                       <p className="text-[6px] font-black text-slate-500 uppercase tracking-widest leading-none">Radar Scan</p>
-                       <div className="flex items-center gap-2">
-                          <Target size={12} className="text-blue-500" />
-                          <div className="h-px flex-1 bg-white/10" />
-                       </div>
-                    </div>
-                 </div>
-
-                 {/* Matrix Pixel Cluster */}
-                 <div className="grid grid-cols-10 gap-0.5 opacity-5 py-4 border-t border-white/5">
-                    {[...Array(40)].map((_, i) => (
-                      <motion.div key={i} animate={{ opacity: [0, 1, 0] }} 
-                        transition={{ duration: 4, delay: i * 0.1, repeat: Infinity }}
-                        className="w-full aspect-square bg-blue-400 rounded-px" />
+               {/* Waveform Design */}
+               <div className="space-y-8">
+                 <div className="flex items-end justify-center gap-1.5 h-16 opacity-20">
+                    {[...Array(12)].map((_, i) => (
+                       <motion.div key={i}
+                         animate={{ height: [8, 48, 12, 56, 8] }}
+                         transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
+                         className="w-[3px] bg-blue-500 rounded-full" />
                     ))}
+                 </div>
+                 
+                 <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4 opacity-40 hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-3">
+                      <Network size={14} className="text-blue-500" />
+                      <div className="flex-1 h-px bg-white/5" />
+                      <span className="text-[8px] font-bold text-white tracking-widest">GLOBAL_HUB</span>
+                    </div>
+                    <div className="grid grid-cols-5 gap-1">
+                      {[...Array(15)].map((_, i) => (
+                        <motion.div key={i}
+                          animate={{ opacity: [0.1, 1, 0.1] }}
+                          transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
+                          className="w-full aspect-square bg-blue-500/40 rounded-sm" />
+                      ))}
+                    </div>
                  </div>
                </div>
             </div>
 
-            {/* Bottom Floating Hub Icon */}
-            <div className="flex flex-col items-center gap-5 relative z-10 opacity-30 group cursor-default">
-              <motion.div 
-                whileHover={{ scale: 1.2, rotate: 180 }}
-                className="w-16 h-16 rounded-[24px] bg-blue-600/5 border border-blue-500/20 flex items-center justify-center shadow-2xl transition-all">
-                <Disc size={28} className="text-blue-500 opacity-60 animate-spin-slow" />
-              </motion.div>
-              <div className="text-[7.5px] text-white/40 font-black tracking-[0.8em] uppercase">Unity Core Server-9X</div>
+            {/* Bottom Brand */}
+            <div className="flex flex-col items-center gap-6 relative z-10 opacity-40">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-center">
+                <Globe size={20} className="text-blue-500" />
+              </div>
+              <p className="text-[7.5px] text-white/50 font-bold tracking-[0.5em] uppercase text-center leading-relaxed font-mono">
+                Distributed Learning<br/>Network Phase 9
+              </p>
             </div>
           </div>
         </div>
 
-        {/* COMPACT GLOBAL MINI FOOTER */}
-        <div className="h-10 px-10 flex items-center justify-between border-t border-white/5 bg-black/60 backdrop-blur-3xl shrink-0 opacity-40">
-           <div className="flex gap-20 text-[8.5px] font-black text-white/10 uppercase tracking-[0.8em] italic">
-              <span>Secure Worldwide Tunnel Active</span>
-           </div>
-           
-           <div className="flex items-center gap-8">
-             <div className="text-right">
-                <p className="text-white text-[10px] font-black tracking-tight leading-none italic uppercase">Unity Marketplace Hub</p>
-             </div>
-             <div className="h-6 w-px bg-white/10" />
-             <div className="flex gap-2">
-                <motion.div animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 1.2, repeat: Infinity }} className="w-1 h-1 bg-blue-600 rounded-full" />
-                <motion.div animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 1.2, delay: 0.3, repeat: Infinity }} className="w-1 h-1 bg-blue-600 rounded-full" />
-             </div>
-           </div>
+        {/* FOOTER BAR */}
+        <div className="h-12 px-10 flex items-center justify-between border-t border-white/5 bg-black/60 backdrop-blur-3xl shrink-0">
+          <div className="flex items-center gap-8 opacity-30">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
+              <span className="text-[9px] font-bold uppercase tracking-widest font-mono">Server Status: Optimal</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-10">
+            <div className="flex items-center gap-4 text-[9px] font-bold text-slate-500 uppercase tracking-[0.25em] font-mono">
+              <span>Latency: 28ms</span>
+              <span className="text-white/10">//</span>
+              <span>Uptime: 99.9%</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
