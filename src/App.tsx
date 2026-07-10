@@ -11,7 +11,15 @@ const MEETINGS = [
   { id: "D_NV8qU7ZUo", title: "3 Meeting", time: "03:00 PM", desc: "Corporate Insights Hub", color: "from-indigo-600 to-purple-600" },
   { id: "bmo39684cyE", title: "6:30 meeting", time: "06:30 PM", desc: "Evening Tech Insights", color: "from-cyan-600 to-blue-600" },
   { id: "KWhhOZd5RYU", title: "7 meeting", time: "07:00 PM", desc: "Evening Townhall Session", color: "from-blue-700 to-blue-500" },
-  { id: "vn2-RcxKWoo", title: "7:30 meeting", time: "07:30 PM", desc: "Night Strategy Sync", color: "from-indigo-700 to-purple-700" }
+  { id: "vn2-RcxKWoo", title: "7:30 meeting", time: "07:30 PM", desc: "Night Strategy Sync", color: "from-indigo-700 to-purple-700" },
+  { id: "b41w006Dwkw", title: "7 Modify", time: "07:00 PM", desc: "Live Modification Session", color: "from-emerald-600 to-teal-600" }
+];
+
+const THEMES = [
+  { id: 'cosmic', name: 'Cosmic Slate', bg: 'bg-[#02040a]', text: 'text-white', border: 'border-white/5', accent: 'text-blue-500' },
+  { id: 'cyber', name: 'Cyber Neon', bg: 'bg-[#0a0a0c]', text: 'text-white', border: 'border-pink-500/20', accent: 'text-pink-500' },
+  { id: 'clean', name: 'Minimalist', bg: 'bg-gray-50', text: 'text-gray-900', border: 'border-gray-200', accent: 'text-black' },
+  { id: 'fullscreen', name: 'Full Screen', bg: 'bg-black', text: 'text-white', border: 'border-none', accent: 'text-red-500' },
 ];
 
 const COMMENTS_DATA = [
@@ -70,6 +78,7 @@ const COMMENTS_DATA = [
 
 export default function App() {
   const [selectedMeeting, setSelectedMeeting] = useState<null | typeof MEETINGS[0]>(null);
+  const [selectedTheme, setSelectedTheme] = useState(THEMES[0]);
   const [activeComments, setActiveComments] = useState(COMMENTS_DATA.slice(0, 20));
   const commentIndexRef = useRef(20);
 
@@ -116,10 +125,20 @@ export default function App() {
               <h1 className="text-7xl lg:text-[120px] font-display font-bold tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/20">
                 UNITY <span className="text-blue-500">EARNING</span>
               </h1>
-              <div className="flex items-center justify-center gap-4 mt-4">
-                <div className="h-px w-12 bg-white/10" />
-                <p className="text-blue-500 font-bold text-[11px] tracking-[1em] uppercase">Ecosystem of Intelligence</p>
-                <div className="h-px w-12 bg-white/10" />
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+                {THEMES.map(theme => (
+                  <button 
+                    key={theme.id}
+                    onClick={() => setSelectedTheme(theme)}
+                    className={`px-4 py-2 rounded-full border text-[10px] font-bold tracking-widest uppercase transition-all ${
+                      selectedTheme.id === theme.id 
+                        ? 'bg-blue-600 border-blue-500 text-white' 
+                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/30'
+                    }`}
+                  >
+                    {theme.name}
+                  </button>
+                ))}
               </div>
             </motion.div>
           </header>
@@ -179,11 +198,12 @@ export default function App() {
   }
 
   return (
-    <div className="relative w-full h-screen bg-[#02040a] flex flex-col items-center justify-center overflow-hidden font-sans select-none text-white selection:bg-blue-500/30 font-sans">
+    <div className={`relative w-full h-screen ${selectedTheme.bg} flex flex-col items-center justify-center overflow-hidden font-sans select-none ${selectedTheme.text} selection:bg-blue-500/30`}>
       <div className="relative z-10 w-full h-full flex flex-col">
         
         {/* SMALL COMPACT HEADER - TOP LEFT BRANDING */}
-        <div className="h-16 px-8 flex items-center justify-between border-b border-white/5 bg-black/60 backdrop-blur-3xl shrink-0">
+        {selectedTheme.id !== 'fullscreen' && (
+          <div className={`h-16 px-8 flex items-center justify-between border-b ${selectedTheme.border} ${selectedTheme.bg} backdrop-blur-3xl shrink-0`}>
           <div className="flex items-center gap-6">
             <button 
               onClick={() => setSelectedMeeting(null)} 
@@ -218,50 +238,53 @@ export default function App() {
              </div>
           </div>
         </div>
-
+        )}
+        
         <div className="flex-1 flex flex-row relative overflow-hidden">
           
           {/* VERTICAL STREAMING COMMENTS - PROFESSIONAL TICKER */}
-          <div className="hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r border-white/5 bg-[#02040a]/40 backdrop-blur-3xl relative shrink-0">
-             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
-             <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
- 
-             <div className="mb-6 flex items-center justify-between relative z-20">
-               <div className="flex items-center gap-2">
-                 <MessageSquare size={14} className="text-blue-500" />
-                 <h2 className="text-[11px] font-display font-bold uppercase tracking-[0.2em] text-white/80">Live Discussion</h2>
+          {selectedTheme.id !== 'fullscreen' && (
+            <div className="hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r border-white/5 bg-[#02040a]/40 backdrop-blur-3xl relative shrink-0">
+               <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
+               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
+   
+               <div className="mb-6 flex items-center justify-between relative z-20">
+                 <div className="flex items-center gap-2">
+                   <MessageSquare size={14} className="text-blue-500" />
+                   <h2 className="text-[11px] font-display font-bold uppercase tracking-[0.2em] text-white/80">Live Discussion</h2>
+                 </div>
+                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                </div>
-               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-             </div>
-
-             <div className="flex-1 overflow-hidden relative">
-                <div className="flex flex-col gap-4 h-full relative"> 
-                  <AnimatePresence mode="popLayout" initial={false}>
-                  {activeComments.map((comment, i) => (
-                    <motion.div
-                      key={`comment-${commentIndexRef.current - activeComments.length + i}`}
-                      layout
-                      initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                      animate={{ opacity: 1, x: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9, x: 20, filter: "blur(8px)" }}
-                      transition={{ 
-                        opacity: { duration: 0.4 },
-                        layout: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
-                      }}
-                    >
-                      <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl backdrop-blur-2xl hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-bold text-blue-400 capitalize tracking-wide">{comment.name}</span>
-                          <span className="text-[8px] text-white/10 font-mono italic">0.4s</span>
+ 
+               <div className="flex-1 overflow-hidden relative">
+                  <div className="flex flex-col gap-4 h-full relative"> 
+                    <AnimatePresence mode="popLayout" initial={false}>
+                    {activeComments.map((comment, i) => (
+                      <motion.div
+                        key={`comment-${commentIndexRef.current - activeComments.length + i}`}
+                        layout
+                        initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9, x: 20, filter: "blur(8px)" }}
+                        transition={{ 
+                          opacity: { duration: 0.4 },
+                          layout: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
+                        }}
+                      >
+                        <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl backdrop-blur-2xl hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[10px] font-bold text-blue-400 capitalize tracking-wide">{comment.name}</span>
+                            <span className="text-[8px] text-white/10 font-mono italic">0.4s</span>
+                          </div>
+                          <p className="text-[13px] text-slate-300 font-medium leading-relaxed tracking-tight">{comment.text}</p>
                         </div>
-                        <p className="text-[13px] text-slate-300 font-medium leading-relaxed tracking-tight">{comment.text}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* CINEMATIC VIDEO CENTER - MAXIMIZED FOCUS */}
           <div className="flex-1 flex flex-col justify-center pt-4 pb-12 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.05)_0%,transparent_70%)]">
@@ -307,96 +330,98 @@ export default function App() {
           </div>
 
           {/* ADVANCED TECH VISUALS */}
-          <div className="hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-12 px-6 border-l border-white/5 bg-black/40 backdrop-blur-3xl shrink-0 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-transparent opacity-20" />
-            
-            <div className="w-full space-y-12 relative z-10">
-               {/* Core Tech Spinner */}
-               <div className="flex flex-col items-center gap-8 text-center pt-4">
-                  <div className="relative">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                      className="w-32 h-32 border border-dashed border-blue-500/20 rounded-full flex items-center justify-center">
-                        <motion.div animate={{ rotate: -720 }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                           className="w-24 h-24 border border-blue-500/10 rounded-full flex items-center justify-center">
-                           <Hexagon size={24} className="text-blue-500/20" />
-                        </motion.div>
-                    </motion.div>
-                    <motion.div 
-                      animate={{ 
-                        opacity: [0.4, 1, 0.4],
-                        scale: [1, 1.1, 1],
-                        filter: ["drop-shadow(0 0 5px rgba(37,99,235,0.4))", "drop-shadow(0 0 20px rgba(37,99,235,0.8))", "drop-shadow(0 0 5px rgba(37,99,235,0.4))"]
-                      }} 
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
-                        <Cpu size={32} className="text-blue-500 fill-blue-500/20" />
-                    </motion.div>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-white font-bold tracking-[0.3em] uppercase underline decoration-blue-500/50 underline-offset-4">Unity_Core</p>
-                    <p className="text-[7px] text-blue-500 font-mono tracking-widest uppercase">System Stabilized</p>
-                  </div>
-               </div>
-
-               {/* Live Scanners */}
-               <div className="space-y-8">
-                 {[...Array(3)].map((_, i) => (
-                    <div key={`tech-${i}`} className="space-y-4 opacity-50">
-                       <div className="flex justify-between text-[7px] font-bold uppercase tracking-widest">
-                          <span className="text-slate-500">Flux_{i+1}</span>
-                          <span className="text-blue-500 font-mono">{(89.2 + Math.random() * 10).toFixed(1)}%</span>
-                       </div>
-                       <div className="h-1 bg-white/[0.03] w-full relative overflow-hidden rounded-full border border-white/5">
-                          <motion.div 
-                            animate={{ x: ["-100%", "100%"] }} 
-                            transition={{ duration: 2 + i, repeat: Infinity, ease: "linear" }}
-                            className="h-full w-1/3 bg-gradient-to-r from-transparent via-blue-500 to-transparent" 
-                          />
-                       </div>
+          {selectedTheme.id !== 'fullscreen' && (
+            <div className="hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-12 px-6 border-l border-white/5 bg-black/40 backdrop-blur-3xl shrink-0 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-transparent opacity-20" />
+              
+              <div className="w-full space-y-12 relative z-10">
+                 {/* Core Tech Spinner */}
+                 <div className="flex flex-col items-center gap-8 text-center pt-4">
+                    <div className="relative">
+                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                        className="w-32 h-32 border border-dashed border-blue-500/20 rounded-full flex items-center justify-center">
+                          <motion.div animate={{ rotate: -720 }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                             className="w-24 h-24 border border-blue-500/10 rounded-full flex items-center justify-center">
+                             <Hexagon size={24} className="text-blue-500/20" />
+                          </motion.div>
+                      </motion.div>
+                      <motion.div 
+                        animate={{ 
+                          opacity: [0.4, 1, 0.4],
+                          scale: [1, 1.1, 1],
+                          filter: ["drop-shadow(0 0 5px rgba(37,99,235,0.4))", "drop-shadow(0 0 20px rgba(37,99,235,0.8))", "drop-shadow(0 0 5px rgba(37,99,235,0.4))"]
+                        }} 
+                        transition={{ duration: 3, repeat: Infinity }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                          <Cpu size={32} className="text-blue-500 fill-blue-500/20" />
+                      </motion.div>
                     </div>
-                 ))}
-               </div>
-
-               {/* Waveform Design */}
-               <div className="space-y-8">
-                 <div className="flex items-end justify-center gap-1.5 h-16 opacity-20">
-                    {[...Array(12)].map((_, i) => (
-                       <motion.div key={i}
-                         animate={{ height: [8, 48, 12, 56, 8] }}
-                         transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
-                         className="w-[3px] bg-blue-500 rounded-full" />
-                    ))}
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-white font-bold tracking-[0.3em] uppercase underline decoration-blue-500/50 underline-offset-4">Unity_Core</p>
+                      <p className="text-[7px] text-blue-500 font-mono tracking-widest uppercase">System Stabilized</p>
+                    </div>
                  </div>
-                 
-                 <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4 opacity-40 hover:opacity-100 transition-opacity">
-                    <div className="flex items-center gap-3">
-                      <Network size={14} className="text-blue-500" />
-                      <div className="flex-1 h-px bg-white/5" />
-                      <span className="text-[8px] font-bold text-white tracking-widest">GLOBAL_HUB</span>
-                    </div>
-                    <div className="grid grid-cols-5 gap-1">
-                      {[...Array(15)].map((_, i) => (
-                        <motion.div key={i}
-                          animate={{ opacity: [0.1, 1, 0.1] }}
-                          transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
-                          className="w-full aspect-square bg-blue-500/40 rounded-sm" />
+
+                 {/* Live Scanners */}
+                 <div className="space-y-8">
+                   {[...Array(3)].map((_, i) => (
+                      <div key={`tech-${i}`} className="space-y-4 opacity-50">
+                         <div className="flex justify-between text-[7px] font-bold uppercase tracking-widest">
+                            <span className="text-slate-500">Flux_{i+1}</span>
+                            <span className="text-blue-500 font-mono">{(89.2 + Math.random() * 10).toFixed(1)}%</span>
+                         </div>
+                         <div className="h-1 bg-white/[0.03] w-full relative overflow-hidden rounded-full border border-white/5">
+                            <motion.div 
+                              animate={{ x: ["-100%", "100%"] }} 
+                              transition={{ duration: 2 + i, repeat: Infinity, ease: "linear" }}
+                              className="h-full w-1/3 bg-gradient-to-r from-transparent via-blue-500 to-transparent" 
+                            />
+                         </div>
+                      </div>
+                   ))}
+                 </div>
+
+                 {/* Waveform Design */}
+                 <div className="space-y-8">
+                   <div className="flex items-end justify-center gap-1.5 h-16 opacity-20">
+                      {[...Array(12)].map((_, i) => (
+                         <motion.div key={i}
+                           animate={{ height: [8, 48, 12, 56, 8] }}
+                           transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
+                           className="w-[3px] bg-blue-500 rounded-full" />
                       ))}
-                    </div>
+                   </div>
+                   
+                   <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4 opacity-40 hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-3">
+                        <Network size={14} className="text-blue-500" />
+                        <div className="flex-1 h-px bg-white/5" />
+                        <span className="text-[8px] font-bold text-white tracking-widest">GLOBAL_HUB</span>
+                      </div>
+                      <div className="grid grid-cols-5 gap-1">
+                        {[...Array(15)].map((_, i) => (
+                          <motion.div key={i}
+                            animate={{ opacity: [0.1, 1, 0.1] }}
+                            transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
+                            className="w-full aspect-square bg-blue-500/40 rounded-sm" />
+                        ))}
+                      </div>
+                   </div>
                  </div>
-               </div>
-            </div>
-
-            {/* Bottom Brand */}
-            <div className="flex flex-col items-center gap-6 relative z-10 opacity-40">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-center">
-                <Globe size={20} className="text-blue-500" />
               </div>
-              <p className="text-[7.5px] text-white/50 font-bold tracking-[0.5em] uppercase text-center leading-relaxed font-mono">
-                Distributed Learning<br/>Network Phase 9
-              </p>
+
+              {/* Bottom Brand */}
+              <div className="flex flex-col items-center gap-6 relative z-10 opacity-40">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-center">
+                  <Globe size={20} className="text-blue-500" />
+                </div>
+                <p className="text-[7.5px] text-white/50 font-bold tracking-[0.5em] uppercase text-center leading-relaxed font-mono">
+                  Distributed Learning<br/>Network Phase 9
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* FOOTER BAR */}
