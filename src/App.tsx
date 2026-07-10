@@ -18,7 +18,7 @@ const MEETINGS = [
 const THEMES = [
   { id: 'cosmic', name: 'Cosmic Slate', bg: 'bg-[#02040a]', text: 'text-white', border: 'border-white/5', accent: 'text-blue-500' },
   { id: 'cyber', name: 'Cyber Neon', bg: 'bg-[#0a0a0c]', text: 'text-white', border: 'border-pink-500/20', accent: 'text-pink-500' },
-  { id: 'clean', name: 'Minimalist', bg: 'bg-gray-50', text: 'text-gray-900', border: 'border-gray-200', accent: 'text-black' },
+  { id: 'minimal', name: 'Dark Minimal', bg: 'bg-[#0f1115]', text: 'text-slate-200', border: 'border-white/10', accent: 'text-blue-400' },
   { id: 'fullscreen', name: 'Full Screen', bg: 'bg-black', text: 'text-white', border: 'border-none', accent: 'text-red-500' },
 ];
 
@@ -244,7 +244,7 @@ export default function App() {
           
           {/* VERTICAL STREAMING COMMENTS - PROFESSIONAL TICKER */}
           {selectedTheme.id !== 'fullscreen' && (
-            <div className="hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r border-white/5 bg-[#02040a]/40 backdrop-blur-3xl relative shrink-0">
+            <div className="hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r border-white/5 bg-black/20 backdrop-blur-3xl relative shrink-0">
                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
    
@@ -271,7 +271,7 @@ export default function App() {
                           layout: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
                         }}
                       >
-                        <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl backdrop-blur-2xl hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group">
+                        <div className="bg-slate-800/40 border border-white/5 p-4 rounded-2xl backdrop-blur-2xl hover:bg-slate-800/60 hover:border-white/10 transition-all duration-300 group">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-[10px] font-bold text-blue-400 capitalize tracking-wide">{comment.name}</span>
                             <span className="text-[8px] text-white/10 font-mono italic">0.4s</span>
@@ -287,7 +287,7 @@ export default function App() {
           )}
 
           {/* CINEMATIC VIDEO CENTER - MAXIMIZED FOCUS */}
-          <div className="flex-1 flex flex-col justify-center pt-4 pb-12 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.05)_0%,transparent_70%)]">
+          <div className="flex-1 flex flex-col justify-center pt-12 pb-4 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.05)_0%,transparent_70%)]">
             
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                <motion.div 
@@ -297,7 +297,7 @@ export default function App() {
                />
             </div>
 
-            <div className="relative w-full h-full max-w-[100%] mx-auto flex flex-col justify-center">
+            <div className="relative w-full h-full max-w-4xl mx-auto flex flex-col justify-center">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
