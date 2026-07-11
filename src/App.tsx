@@ -12,14 +12,103 @@ const MEETINGS = [
   { id: "bmo39684cyE", title: "6:30 meeting", time: "06:30 PM", desc: "Evening Tech Insights", color: "from-cyan-600 to-blue-600" },
   { id: "KWhhOZd5RYU", title: "7 meeting", time: "07:00 PM", desc: "Evening Townhall Session", color: "from-blue-700 to-blue-500" },
   { id: "vn2-RcxKWoo", title: "7:30 meeting", time: "07:30 PM", desc: "Night Strategy Sync", color: "from-indigo-700 to-purple-700" },
-  { id: "b41w006Dwkw", title: "7 Modify", time: "07:00 PM", desc: "Live Modification Session", color: "from-emerald-600 to-teal-600" }
+  { id: "b41w006Dwkw", title: "7 Modify", time: "07:00 PM", desc: "Live Modification Session", color: "from-emerald-600 to-teal-600" },
+  { id: "zxwKZtPX96o", title: "3 Modify", time: "03:00 PM", desc: "Afternoon Update & Refinements", color: "from-rose-600 to-orange-600" }
 ];
 
 const THEMES = [
-  { id: 'cosmic', name: 'Cosmic Slate', bg: 'bg-[#02040a]', text: 'text-white', border: 'border-white/5', accent: 'text-blue-500' },
-  { id: 'cyber', name: 'Cyber Neon', bg: 'bg-[#0a0a0c]', text: 'text-white', border: 'border-pink-500/20', accent: 'text-pink-500' },
-  { id: 'minimal', name: 'Dark Minimal', bg: 'bg-[#0f1115]', text: 'text-slate-200', border: 'border-white/10', accent: 'text-blue-400' },
-  { id: 'fullscreen', name: 'Full Screen', bg: 'bg-black', text: 'text-white', border: 'border-none', accent: 'text-red-500' },
+  { 
+    id: 'cosmic', 
+    name: 'Cosmic Slate', 
+    bg: 'bg-[#02040a]', 
+    text: 'text-white', 
+    border: 'border-white/5', 
+    accent: 'text-blue-500',
+    accentBg: 'bg-blue-600',
+    glowColor: 'rgba(37,99,235,0.3)',
+    glowClass: 'bg-blue-500/5',
+    gradFrom: 'from-blue-500',
+    gradTo: 'to-indigo-600',
+    sidebarBg: 'bg-[#02040a]/40',
+    cardBg: 'bg-slate-800/40',
+    cardBorder: 'border-white/5',
+    cardHoverBg: 'hover:bg-slate-800/60',
+    cardHoverBorder: 'hover:border-white/10',
+    frameBorder: 'border-[#131b2d]',
+    frameRing: 'ring-white/10',
+    badgeBg: 'bg-blue-600/10',
+    badgeBorder: 'border-blue-500/20',
+    badgeText: 'text-blue-400'
+  },
+  { 
+    id: 'cyber', 
+    name: 'Cyber Neon', 
+    bg: 'bg-[#06020f]', 
+    text: 'text-pink-100', 
+    border: 'border-pink-500/20', 
+    accent: 'text-pink-500',
+    accentBg: 'bg-pink-600',
+    glowColor: 'rgba(236,72,153,0.35)',
+    glowClass: 'bg-pink-500/5',
+    gradFrom: 'from-pink-500',
+    gradTo: 'to-purple-600',
+    sidebarBg: 'bg-[#06020f]/60',
+    cardBg: 'bg-pink-950/10',
+    cardBorder: 'border-pink-500/10',
+    cardHoverBg: 'hover:bg-pink-950/20',
+    cardHoverBorder: 'hover:border-pink-400/30',
+    frameBorder: 'border-[#1b0824]',
+    frameRing: 'ring-pink-500/20',
+    badgeBg: 'bg-pink-600/10',
+    badgeBorder: 'border-pink-500/20',
+    badgeText: 'text-pink-400'
+  },
+  { 
+    id: 'minimal', 
+    name: 'Dark Minimal', 
+    bg: 'bg-[#07080a]', 
+    text: 'text-slate-200', 
+    border: 'border-slate-800', 
+    accent: 'text-slate-400',
+    accentBg: 'bg-slate-800',
+    glowColor: 'rgba(148,163,184,0.08)',
+    glowClass: 'bg-slate-500/2',
+    gradFrom: 'from-slate-700',
+    gradTo: 'to-slate-900',
+    sidebarBg: 'bg-[#07080a]',
+    cardBg: 'bg-[#0d0e12]',
+    cardBorder: 'border-slate-800/80',
+    cardHoverBg: 'hover:bg-[#12131a]',
+    cardHoverBorder: 'hover:border-slate-700',
+    frameBorder: 'border-[#0f1115]',
+    frameRing: 'ring-white/5',
+    badgeBg: 'bg-slate-800/20',
+    badgeBorder: 'border-slate-800',
+    badgeText: 'text-slate-400'
+  },
+  { 
+    id: 'fullscreen', 
+    name: 'Full Screen', 
+    bg: 'bg-black', 
+    text: 'text-white', 
+    border: 'border-none', 
+    accent: 'text-red-500',
+    accentBg: 'bg-red-600',
+    glowColor: 'rgba(0,0,0,0)',
+    glowClass: 'bg-transparent',
+    gradFrom: 'from-red-500',
+    gradTo: 'to-red-700',
+    sidebarBg: 'bg-transparent',
+    cardBg: 'bg-transparent',
+    cardBorder: 'border-none',
+    cardHoverBg: 'bg-transparent',
+    cardHoverBorder: 'border-none',
+    frameBorder: 'border-black',
+    frameRing: 'ring-transparent',
+    badgeBg: 'bg-transparent',
+    badgeBorder: 'border-none',
+    badgeText: 'text-white'
+  }
 ];
 
 const COMMENTS_DATA = [
@@ -126,19 +215,22 @@ export default function App() {
                 UNITY <span className="text-blue-500">EARNING</span>
               </h1>
               <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-                {THEMES.map(theme => (
-                  <button 
-                    key={theme.id}
-                    onClick={() => setSelectedTheme(theme)}
-                    className={`px-4 py-2 rounded-full border text-[10px] font-bold tracking-widest uppercase transition-all ${
-                      selectedTheme.id === theme.id 
-                        ? 'bg-blue-600 border-blue-500 text-white' 
-                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/30'
-                    }`}
-                  >
-                    {theme.name}
-                  </button>
-                ))}
+                {THEMES.map(theme => {
+                  const isActive = selectedTheme.id === theme.id;
+                  return (
+                    <button 
+                      key={theme.id}
+                      onClick={() => setSelectedTheme(theme)}
+                      className={`px-4 py-2 rounded-full border text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                        isActive 
+                          ? `${theme.accentBg} border-transparent text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]` 
+                          : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/30'
+                      }`}
+                    >
+                      {theme.name}
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           </header>
@@ -207,9 +299,9 @@ export default function App() {
           <div className="flex items-center gap-6">
             <button 
               onClick={() => setSelectedMeeting(null)} 
-              className="group p-2 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-blue-500/50 transition-all duration-300"
+              className={`group p-2 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-current transition-all duration-300 ${selectedTheme.accent}`}
             >
-              <ChevronLeft size={18} className="text-blue-400 group-hover:-translate-x-0.5 transition-transform" />
+              <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
             </button>
             <div className="flex flex-col">
               <div className="flex items-center gap-2.5">
@@ -219,7 +311,7 @@ export default function App() {
                 </div>
                 <h1 className="text-white text-xs font-display font-bold tracking-[0.2em] uppercase leading-none">{selectedMeeting.title} <span className="text-red-500 animate-pulse">LIVE</span></h1>
               </div>
-              <p className="text-blue-500/50 font-bold text-[8px] tracking-[0.4em] uppercase mt-1.5 leading-none font-mono">Internal Protocol // Hub Bangladesh</p>
+              <p className={`font-bold text-[8px] tracking-[0.4em] uppercase mt-1.5 leading-none font-mono ${selectedTheme.accent} opacity-50`}>Internal Protocol // Hub Bangladesh</p>
             </div>
           </div>
           <div className="flex items-center gap-12">
@@ -232,9 +324,9 @@ export default function App() {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400"><span className="text-white">2.4K</span> Watching</span>
              </div>
              <div className="h-8 w-px bg-white/5" />
-             <div className="flex items-center gap-3 px-4 py-1.5 bg-blue-600/10 rounded-xl border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.05)]">
-                <Shield size={14} className="text-blue-500" />
-                <span className="text-[10px] font-bold font-mono text-blue-400 tracking-wider">NODE_9X_SECURE</span>
+             <div className={`flex items-center gap-3 px-4 py-1.5 ${selectedTheme.badgeBg} rounded-xl border ${selectedTheme.badgeBorder} shadow-[0_0_20px_rgba(255,255,255,0.02)]`}>
+                <Shield size={14} className={selectedTheme.accent} />
+                <span className={`text-[10px] font-bold font-mono tracking-wider ${selectedTheme.badgeText}`}>NODE_9X_SECURE</span>
              </div>
           </div>
         </div>
@@ -244,16 +336,16 @@ export default function App() {
           
           {/* VERTICAL STREAMING COMMENTS - PROFESSIONAL TICKER */}
           {selectedTheme.id !== 'fullscreen' && (
-            <div className="hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r border-white/5 bg-black/20 backdrop-blur-3xl relative shrink-0">
-               <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#02040a] via-transparent to-transparent z-10" />
-               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#02040a] via-transparent to-transparent z-10" />
+            <div className={`hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r ${selectedTheme.border} ${selectedTheme.sidebarBg} backdrop-blur-3xl relative shrink-0`}>
+               <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/60 via-transparent to-transparent z-10" />
+               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
    
                <div className="mb-6 flex items-center justify-between relative z-20">
                  <div className="flex items-center gap-2">
-                   <MessageSquare size={14} className="text-blue-500" />
+                   <MessageSquare size={14} className={selectedTheme.accent} />
                    <h2 className="text-[11px] font-display font-bold uppercase tracking-[0.2em] text-white/80">Live Discussion</h2>
                  </div>
-                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
+                 <div className={`w-1.5 h-1.5 rounded-full animate-pulse shadow-[0_0_10px_currentColor] ${selectedTheme.accent}`} />
                </div>
  
                <div className="flex-1 overflow-hidden relative">
@@ -271,9 +363,9 @@ export default function App() {
                           layout: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
                         }}
                       >
-                        <div className="bg-slate-800/40 border border-white/5 p-4 rounded-2xl backdrop-blur-2xl hover:bg-slate-800/60 hover:border-white/10 transition-all duration-300 group">
+                        <div className={`${selectedTheme.cardBg} border ${selectedTheme.border} p-4 rounded-2xl backdrop-blur-2xl hover:border-current/20 transition-all duration-300 group`}>
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-[10px] font-bold text-blue-400 capitalize tracking-wide">{comment.name}</span>
+                            <span className={`text-[10px] font-bold capitalize tracking-wide ${selectedTheme.commentUser}`}>{comment.name}</span>
                             <span className="text-[8px] text-white/10 font-mono italic">0.4s</span>
                           </div>
                           <p className="text-[13px] text-slate-300 font-medium leading-relaxed tracking-tight">{comment.text}</p>
@@ -287,13 +379,13 @@ export default function App() {
           )}
 
           {/* CINEMATIC VIDEO CENTER - MAXIMIZED FOCUS */}
-          <div className="flex-1 flex flex-col justify-center pt-12 pb-4 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.05)_0%,transparent_70%)]">
+          <div className="flex-1 flex flex-col justify-center py-10 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.02)_0%,transparent_70%)]">
             
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                <motion.div 
                  animate={{ opacity: [0.1, 0.2, 0.1] }}
                  transition={{ duration: 4, repeat: Infinity }}
-                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-blue-500/5 blur-[120px] rounded-full" 
+                 className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] ${selectedTheme.accent} opacity-[0.03] blur-[120px] rounded-full`} 
                />
             </div>
 
@@ -303,10 +395,13 @@ export default function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="relative group h-full flex flex-col justify-center"
               >
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[56px] opacity-10 group-hover:opacity-20 blur-xl transition-opacity duration-700" />
-                <div className="relative shadow-[0_80px_200px_-40px_rgba(37,99,235,0.4)] transition-transform duration-1000 hover:scale-[1.005]">
+                <div className={`absolute -inset-0.5 bg-gradient-to-r ${selectedTheme.gradFrom} to-transparent rounded-[56px] opacity-10 group-hover:opacity-20 blur-xl transition-opacity duration-700`} />
+                <div 
+                  className="relative transition-transform duration-1000 hover:scale-[1.005] rounded-[56px] overflow-hidden"
+                  style={{ boxShadow: `0 80px 200px -40px ${selectedTheme.glowColor}` }}
+                >
                   <iframe
-                    className="w-full aspect-video bg-black rounded-[56px] border-[14px] border-[#131b2d] ring-1 ring-white/10"
+                    className={`w-full aspect-video bg-black rounded-[56px] border-[14px] ${selectedTheme.iframeBorder} ring-1 ring-white/10`}
                     src={`https://www.youtube.com/embed/${selectedMeeting.id}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1`}
                     allowFullScreen
                   />
@@ -314,16 +409,16 @@ export default function App() {
                   {/* Floating Tech Corners */}
                   <div className="absolute top-8 left-8 flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest font-mono">REC // {selectedMeeting.time}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest font-mono ${selectedTheme.accent}`}>REC // {selectedMeeting.time}</span>
                   </div>
                 </div>
               </motion.div>
               
               <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center gap-12 opacity-20 pointer-events-none">
-                 <div className="flex items-center gap-6 text-[9px] font-mono text-blue-500 tracking-[1.5em] uppercase">
-                    <div className="h-px w-20 bg-gradient-to-r from-transparent to-blue-500" />
+                 <div className={`flex items-center gap-6 text-[9px] font-mono tracking-[1.5em] uppercase ${selectedTheme.accent}`}>
+                    <div className="h-px w-20 bg-gradient-to-r from-transparent to-current" />
                     <span>ENCRYPTION_LINK_ACTIVE</span>
-                    <div className="h-px w-20 bg-gradient-to-l from-transparent to-blue-500" />
+                    <div className="h-px w-20 bg-gradient-to-l from-transparent to-current" />
                  </div>
               </div>
             </div>
@@ -331,35 +426,35 @@ export default function App() {
 
           {/* ADVANCED TECH VISUALS */}
           {selectedTheme.id !== 'fullscreen' && (
-            <div className="hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-12 px-6 border-l border-white/5 bg-black/40 backdrop-blur-3xl shrink-0 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-transparent opacity-20" />
+            <div className={`hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-12 px-6 border-l ${selectedTheme.border} ${selectedTheme.sidebarBg} backdrop-blur-3xl shrink-0 relative overflow-hidden`}>
+              <div className={`absolute inset-0 bg-gradient-to-b ${selectedTheme.gradFrom} to-transparent opacity-20`} />
               
               <div className="w-full space-y-12 relative z-10">
                  {/* Core Tech Spinner */}
                  <div className="flex flex-col items-center gap-8 text-center pt-4">
                     <div className="relative">
                       <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                        className="w-32 h-32 border border-dashed border-blue-500/20 rounded-full flex items-center justify-center">
+                        className={`w-32 h-32 border border-dashed rounded-full flex items-center justify-center ${selectedTheme.badgeBorder} opacity-40`}>
                           <motion.div animate={{ rotate: -720 }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                             className="w-24 h-24 border border-blue-500/10 rounded-full flex items-center justify-center">
-                             <Hexagon size={24} className="text-blue-500/20" />
+                             className={`w-24 h-24 border rounded-full flex items-center justify-center ${selectedTheme.badgeBorder} opacity-30`}>
+                             <Hexagon size={24} className={`${selectedTheme.accent} opacity-20`} />
                           </motion.div>
                       </motion.div>
                       <motion.div 
                         animate={{ 
                           opacity: [0.4, 1, 0.4],
                           scale: [1, 1.1, 1],
-                          filter: ["drop-shadow(0 0 5px rgba(37,99,235,0.4))", "drop-shadow(0 0 20px rgba(37,99,235,0.8))", "drop-shadow(0 0 5px rgba(37,99,235,0.4))"]
+                          filter: [`drop-shadow(0 0 5px ${selectedTheme.glowColor})`, `drop-shadow(0 0 20px ${selectedTheme.glowColor})`, `drop-shadow(0 0 5px ${selectedTheme.glowColor})`]
                         }} 
                         transition={{ duration: 3, repeat: Infinity }}
                         className="absolute inset-0 flex items-center justify-center"
                       >
-                          <Cpu size={32} className="text-blue-500 fill-blue-500/20" />
+                          <Cpu size={32} className={`${selectedTheme.accent} fill-current/10`} />
                       </motion.div>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] text-white font-bold tracking-[0.3em] uppercase underline decoration-blue-500/50 underline-offset-4">Unity_Core</p>
-                      <p className="text-[7px] text-blue-500 font-mono tracking-widest uppercase">System Stabilized</p>
+                      <p className={`text-[10px] text-white font-bold tracking-[0.3em] uppercase underline underline-offset-4 ${selectedTheme.textDecoration}`}>Unity_Core</p>
+                      <p className={`text-[7px] font-mono tracking-widest uppercase ${selectedTheme.accent}`}>System Stabilized</p>
                     </div>
                  </div>
 
@@ -369,13 +464,13 @@ export default function App() {
                       <div key={`tech-${i}`} className="space-y-4 opacity-50">
                          <div className="flex justify-between text-[7px] font-bold uppercase tracking-widest">
                             <span className="text-slate-500">Flux_{i+1}</span>
-                            <span className="text-blue-500 font-mono">{(89.2 + Math.random() * 10).toFixed(1)}%</span>
+                            <span className={`font-mono ${selectedTheme.accent}`}>{(89.2 + Math.random() * 10).toFixed(1)}%</span>
                          </div>
                          <div className="h-1 bg-white/[0.03] w-full relative overflow-hidden rounded-full border border-white/5">
                             <motion.div 
                               animate={{ x: ["-100%", "100%"] }} 
                               transition={{ duration: 2 + i, repeat: Infinity, ease: "linear" }}
-                              className="h-full w-1/3 bg-gradient-to-r from-transparent via-blue-500 to-transparent" 
+                              className={`h-full w-1/3 bg-gradient-to-r from-transparent via-current to-transparent ${selectedTheme.accent}`} 
                             />
                          </div>
                       </div>
@@ -389,13 +484,13 @@ export default function App() {
                          <motion.div key={i}
                            animate={{ height: [8, 48, 12, 56, 8] }}
                            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
-                           className="w-[3px] bg-blue-500 rounded-full" />
+                           className={`w-[3px] rounded-full ${selectedTheme.accent} bg-current`} />
                       ))}
                    </div>
                    
                    <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4 opacity-40 hover:opacity-100 transition-opacity">
                       <div className="flex items-center gap-3">
-                        <Network size={14} className="text-blue-500" />
+                        <Network size={14} className={selectedTheme.accent} />
                         <div className="flex-1 h-px bg-white/5" />
                         <span className="text-[8px] font-bold text-white tracking-widest">GLOBAL_HUB</span>
                       </div>
@@ -404,7 +499,7 @@ export default function App() {
                           <motion.div key={i}
                             animate={{ opacity: [0.1, 1, 0.1] }}
                             transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
-                            className="w-full aspect-square bg-blue-500/40 rounded-sm" />
+                            className={`w-full aspect-square rounded-sm ${selectedTheme.gridDotColor}`} />
                         ))}
                       </div>
                    </div>
@@ -413,8 +508,8 @@ export default function App() {
 
               {/* Bottom Brand */}
               <div className="flex flex-col items-center gap-6 relative z-10 opacity-40">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-center">
-                  <Globe size={20} className="text-blue-500" />
+                <div className={`w-12 h-12 rounded-2xl ${selectedTheme.badgeBg} border ${selectedTheme.badgeBorder} flex items-center justify-center`}>
+                  <Globe size={20} className={selectedTheme.accent} />
                 </div>
                 <p className="text-[7.5px] text-white/50 font-bold tracking-[0.5em] uppercase text-center leading-relaxed font-mono">
                   Distributed Learning<br/>Network Phase 9
