@@ -4,8 +4,8 @@ import {
   Cpu, Zap, Globe, Hexagon, Network, Disc, Target, 
   Radio, Layers, Activity, Smartphone, Monitor, Database,
   Volume2, VolumeX, RefreshCw, Sparkles, Gauge, Maximize2, ShieldCheck, Check,
-  CheckCircle2, MessageCircle, Search, Filter, Heart, Flame,
-  Clock, ChevronDown, CheckSquare, Square, BarChart2
+  CheckCircle2, MessageCircle, Search, Filter,
+  Clock, CheckSquare, Square, BarChart2
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
@@ -212,17 +212,11 @@ const COMMENTS_DATA = [
   { name: "Omi", text: "Unity earning #1" }, { name: "Tarik", text: "Real source." }
 ];
 
-interface FloatingReaction {
-  id: number;
-  emoji: string;
-  x: number;
-}
-
 export default function App() {
   const [selectedMeeting, setSelectedMeeting] = useState<null | MeetingItem>(null);
   const [selectedTheme, setSelectedTheme] = useState(THEMES[0]);
-  const [activeComments, setActiveComments] = useState(COMMENTS_DATA.slice(0, 15));
-  const commentIndexRef = useRef(15);
+  const [activeComments, setActiveComments] = useState(COMMENTS_DATA.slice(0, 18));
+  const commentIndexRef = useRef(18);
   
   // Dynamic UI States
   const [filterCategory, setFilterCategory] = useState<'all' | 'modify' | 'regular'>('all');
@@ -231,8 +225,6 @@ export default function App() {
   const [isMuted, setIsMuted] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [theaterMode, setTheaterMode] = useState(false);
-  const [reactions, setReactions] = useState<FloatingReaction[]>([]);
-  const [sessionDropdownOpen, setSessionDropdownOpen] = useState(false);
   
   // Interactive Agenda checklist items
   const [agenda, setAgenda] = useState([
@@ -246,22 +238,11 @@ export default function App() {
     setAgenda(prev => prev.map(item => item.id === id ? { ...item, done: !item.done } : item));
   };
 
-  const triggerReaction = (emoji: string) => {
-    const newReaction: FloatingReaction = {
-      id: Date.now() + Math.random(),
-      emoji,
-      x: 10 + Math.random() * 70
-    };
-    setReactions(prev => [...prev, newReaction]);
-    setTimeout(() => {
-      setReactions(prev => prev.filter(r => r.id !== newReaction.id));
-    }, 2000);
-  };
-
   useEffect(() => {
     if (!selectedMeeting) return;
     
-    const intervalTime = meetSmoothMode ? 3200 : 2200;
+    // Fast, continuous streaming comments flow smoothly one after another (every 1.1s)
+    const intervalTime = meetSmoothMode ? 1200 : 900;
     const commentsInterval = setInterval(() => {
       setActiveComments(prev => {
         const nextComment = COMMENTS_DATA[commentIndexRef.current % COMMENTS_DATA.length];
@@ -304,14 +285,12 @@ export default function App() {
     return (
       <div className={`relative w-full min-h-screen ${selectedTheme.bg} flex flex-col items-center overflow-x-hidden font-sans select-none text-white selection:bg-blue-500/30`}>
         
-        {/* Dynamic ambient illumination */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[350px] bg-gradient-to-b ${selectedTheme.gradFrom}/15 to-transparent blur-3xl opacity-50`} />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl flex flex-col gap-10 py-12 px-6">
           
-          {/* TOP BAR CONTRACT */}
           <header className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-2xl bg-gradient-to-tr ${selectedTheme.gradFrom} to-white/10 flex items-center justify-center shadow-lg`}>
@@ -327,7 +306,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Theme Selectors */}
             <div className="flex flex-wrap items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
               {THEMES.map(theme => {
                 const isActive = selectedTheme.id === theme.id;
@@ -348,7 +326,6 @@ export default function App() {
 
               <div className="h-4 w-px bg-white/10 mx-1" />
 
-              {/* Meet Mode Toggle */}
               <button
                 onClick={() => setMeetSmoothMode(!meetSmoothMode)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all ${
@@ -363,9 +340,7 @@ export default function App() {
             </div>
           </header>
 
-          {/* DYNAMIC SEARCH & FILTER CONTROL BAR */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/[0.03] p-4 rounded-2xl border border-white/10">
-            {/* Filter Tabs */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setFilterCategory('all')}
@@ -400,7 +375,6 @@ export default function App() {
               </button>
             </div>
 
-            {/* Quick Search Input */}
             <div className="relative w-full sm:w-72">
               <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -413,7 +387,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* DYNAMIC SESSIONS GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMeetings.map((m, idx) => (
               <div 
@@ -421,12 +394,10 @@ export default function App() {
                 onClick={() => setSelectedMeeting(m)} 
                 className="group relative cursor-pointer transform-gpu transition-all duration-300 hover:-translate-y-1.5"
               >
-                {/* Glow Backdrop */}
                 <div className={`absolute -inset-0.5 bg-gradient-to-r ${m.color} rounded-[28px] opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500`} />
                 
                 <div className={`relative ${selectedTheme.cardBg} rounded-[26px] border ${selectedTheme.border} overflow-hidden shadow-2xl transition-all duration-300 group-hover:border-white/20 flex flex-col justify-between h-[390px]`}>
                   
-                  {/* Top Thumbnail Image Header */}
                   <div className="relative h-44 w-full overflow-hidden bg-slate-900">
                     <img 
                       src={`https://img.youtube.com/vi/${m.id}/hqdefault.jpg`} 
@@ -436,13 +407,11 @@ export default function App() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b1120] via-black/40 to-transparent" />
                     
-                    {/* Time Pill */}
                     <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 bg-black/70 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-mono font-semibold text-white">
                       <Clock size={11} className={selectedTheme.accent} />
                       <span>{m.time}</span>
                     </div>
 
-                    {/* Category Badge */}
                     <div className="absolute top-3 right-3">
                       <span className={`text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
                         m.category === 'modify' 
@@ -453,7 +422,6 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* Play Button Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className={`w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:${selectedTheme.accentBg} group-hover:scale-110 transition-all duration-300`}>
                         <Play className="text-white fill-white ml-0.5" size={18} />
@@ -461,7 +429,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Body Content */}
                   <div className="p-5 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className={`text-xl font-display font-bold text-white tracking-tight group-hover:${selectedTheme.commentUser} transition-colors line-clamp-1`}>
@@ -472,7 +439,6 @@ export default function App() {
                       </p>
                     </div>
 
-                    {/* Footer Info */}
                     <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-1.5 text-slate-400 font-medium">
                         <Users size={12} className={selectedTheme.accent} />
@@ -489,6 +455,21 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* PROFESSIONAL LOBBY FOOTER */}
+          <footer className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-400">
+            <div className="flex items-center gap-3">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
+              <span className="font-medium text-slate-300">Google Meet Broadcast Node // Secure & Encrypted Network</span>
+            </div>
+            <div className="flex items-center gap-6 font-mono text-[11px]">
+              <span className="text-slate-400">Uptime: <strong className="text-emerald-400">99.99%</strong></span>
+              <span className="text-white/20">//</span>
+              <span className="text-slate-400">Active Hubs: <strong className="text-blue-400">14 Global</strong></span>
+              <span className="text-white/20">//</span>
+              <span className={selectedTheme.accent}>Unity Earning Network © 2026</span>
+            </div>
+          </footer>
         </div>
       </div>
     );
@@ -498,31 +479,13 @@ export default function App() {
   return (
     <div className={`relative w-full h-screen ${selectedTheme.bg} flex flex-col items-center justify-center overflow-hidden font-sans select-none ${selectedTheme.text} selection:bg-blue-500/30`}>
       
-      {/* Floating Reaction Particles */}
-      <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden">
-        <AnimatePresence>
-          {reactions.map(r => (
-            <motion.div
-              key={r.id}
-              initial={{ opacity: 1, y: '80vh', scale: 0.8, x: `${r.x}vw` }}
-              animate={{ opacity: 0, y: '15vh', scale: 1.5 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.8, ease: 'easeOut' }}
-              className="absolute text-3xl select-none"
-            >
-              {r.emoji}
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
       <div className="relative z-10 w-full h-full flex flex-col">
         
-        {/* TOP BAR CONTRACT (ZONE 1: TITLE, ZONE 2: SESSION PICKER, ZONE 3: PRESENTER TOOLS) */}
+        {/* TOP BAR CONTRACT: ZONE 1 (TITLE), ZONE 2 (LIVE SESSION BANNER), ZONE 3 (TOOLS) */}
         {selectedTheme.id !== 'fullscreen' && (
           <div className={`h-16 px-6 flex items-center justify-between border-b ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/98' : selectedTheme.sidebarBg} shrink-0 z-30`}>
             
-            {/* Zone 1: Return & Brand Title */}
+            {/* Zone 1: Return & Current Session */}
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => setSelectedMeeting(null)} 
@@ -551,45 +514,16 @@ export default function App() {
               </div>
             </div>
 
-            {/* Zone 2: Instant Dynamic Session Switcher Dropdown */}
-            <div className="relative hidden md:block">
-              <button
-                onClick={() => setSessionDropdownOpen(!sessionDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <span>Switch Session</span>
-                <ChevronDown size={14} className={`transition-transform duration-200 ${sessionDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {sessionDropdownOpen && (
-                <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-64 bg-[#0d121f] border border-white/15 rounded-2xl p-2 shadow-2xl z-50 max-h-72 overflow-y-auto">
-                  <div className="text-[9px] font-mono text-slate-400 uppercase tracking-wider px-2 py-1 mb-1">
-                    Select Live Room
-                  </div>
-                  {MEETINGS.map(m => (
-                    <button
-                      key={m.id}
-                      onClick={() => {
-                        setSelectedMeeting(m);
-                        setSessionDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
-                        selectedMeeting.id === m.id 
-                          ? `${selectedTheme.accentBg} text-white font-bold` 
-                          : 'text-slate-300 hover:bg-white/5'
-                      }`}
-                    >
-                      <span className="truncate">{m.title}</span>
-                      <span className="text-[10px] opacity-70 font-mono">{m.time}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+            {/* Zone 2: Professional Live Session Center Banner */}
+            <div className="hidden md:flex items-center gap-3 px-5 py-1.5 bg-white/[0.03] border border-white/10 rounded-2xl shadow-inner">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-display font-bold tracking-[0.25em] uppercase text-white">
+                LIVE SESSION // <span className={selectedTheme.accent}>UNITY EARNING</span>
+              </span>
             </div>
 
             {/* Zone 3: Presenter Controls */}
             <div className="flex items-center gap-2.5">
-              {/* Meet Smooth Mode Toggle */}
               <button
                 onClick={() => setMeetSmoothMode(!meetSmoothMode)}
                 title="Google Meet Screen Share Optimization"
@@ -604,7 +538,6 @@ export default function App() {
                 <span>{meetSmoothMode ? 'SMOOTH' : 'OFF'}</span>
               </button>
 
-              {/* Audio Toggle */}
               <button
                 onClick={() => {
                   setIsMuted(!isMuted);
@@ -620,7 +553,6 @@ export default function App() {
                 {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
               </button>
 
-              {/* Reload Stream */}
               <button
                 onClick={() => setReloadKey(k => k + 1)}
                 title="Reload Stream Player"
@@ -629,7 +561,6 @@ export default function App() {
                 <RefreshCw size={14} />
               </button>
 
-              {/* Theater View Toggle */}
               <button
                 onClick={() => setTheaterMode(!theaterMode)}
                 title="Toggle Theater Mode"
@@ -682,7 +613,7 @@ export default function App() {
                  </div>
                </div>
 
-               {/* Streaming Comments */}
+               {/* Streaming Comments (Continuous smooth flow without long pauses) */}
                <div className="flex-1 overflow-hidden relative">
                   <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
                   <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
@@ -724,23 +655,13 @@ export default function App() {
                   </div>
                </div>
 
-               {/* INTERACTIVE REACTION BAR */}
-               <div className="pt-3 mt-2 border-t border-white/5 space-y-2">
-                 <div className="flex items-center justify-between text-[9px] font-mono text-slate-400">
-                   <span>Audience Reactions</span>
-                   <span className="text-emerald-400 font-semibold">100% REALTIME</span>
-                 </div>
-                 <div className="flex items-center justify-between gap-1.5 bg-white/[0.03] p-1.5 rounded-xl border border-white/5">
-                   {['❤️', '🔥', '👏', '🚀', '💡'].map((emoji, idx) => (
-                     <button
-                       key={idx}
-                       onClick={() => triggerReaction(emoji)}
-                       className="flex-1 py-1 text-base hover:scale-125 active:scale-90 transition-transform rounded-lg hover:bg-white/10 flex items-center justify-center"
-                     >
-                       {emoji}
-                     </button>
-                   ))}
-                 </div>
+               {/* SLIM & THIN CHAT STATUS BAR */}
+               <div className="mt-2 py-1.5 px-3 bg-white/[0.02] border border-white/5 rounded-xl flex items-center justify-between text-[9px] font-mono text-slate-400">
+                 <span className="flex items-center gap-1.5 text-slate-300 font-semibold">
+                   <Sparkles size={11} className={selectedTheme.accent} />
+                   Live Chat Active
+                 </span>
+                 <span className="text-emerald-400 font-bold">48 msgs/min</span>
                </div>
             </div>
           )}
@@ -793,7 +714,7 @@ export default function App() {
               </div>
             )}
 
-            {/* Video Player Box */}
+            {/* Video Player Box (WATERMARK REMOVED COMPLETELY) */}
             <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl pt-8' : 'max-w-4xl'} mx-auto flex flex-col justify-center`}>
               <div 
                 className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden transform-gpu"
@@ -812,12 +733,6 @@ export default function App() {
                   referrerPolicy="strict-origin-when-cross-origin"
                   loading="eager"
                 />
-                
-                {/* Live Stream Tech Watermark */}
-                <div className="absolute top-4 left-6 flex items-center gap-2 px-3 py-1 bg-black/70 rounded-full border border-white/10 opacity-70 hover:opacity-100 transition-opacity">
-                  <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-                  <span className={`text-[9px] font-bold uppercase tracking-widest font-mono ${selectedTheme.accent}`}>STREAM ACTIVE // {selectedMeeting.time}</span>
-                </div>
               </div>
 
               {/* Dynamic Status Strip */}
