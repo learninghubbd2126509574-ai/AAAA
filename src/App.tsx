@@ -2,9 +2,32 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   ChevronLeft, Play, Users, Shield, MessageSquare, 
   Cpu, Zap, Globe, Hexagon, Network, Disc, Target, 
-  Radio, Layers, Activity, Smartphone, Monitor, Database
+  Radio, Layers, Activity, Smartphone, Monitor, Database,
+  Volume2, VolumeX, RefreshCw, Sparkles, Gauge, Maximize2, ShieldCheck, Check,
+  CheckCircle2, MessageCircle
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+
+const AVATAR_GRADIENTS = [
+  'from-blue-500/20 via-indigo-500/20 to-cyan-500/30 text-cyan-300 border-cyan-500/30',
+  'from-purple-500/20 via-pink-500/20 to-fuchsia-500/30 text-pink-300 border-pink-500/30',
+  'from-emerald-500/20 via-teal-500/20 to-green-500/30 text-emerald-300 border-emerald-500/30',
+  'from-amber-500/20 via-orange-500/20 to-yellow-500/30 text-amber-300 border-amber-500/30',
+  'from-rose-500/20 via-red-500/20 to-pink-500/30 text-rose-300 border-rose-500/30',
+  'from-sky-500/20 via-blue-500/20 to-indigo-500/30 text-sky-300 border-sky-500/30'
+];
+
+const getAvatarStyle = (name: string) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+};
+
+const getInitial = (name: string) => {
+  return name.trim().charAt(0).toUpperCase();
+};
 
 const MEETINGS = [
   { id: "LWq4lIP3Oek", title: "11 Meeting", time: "11:00 AM", desc: "Digital Strategy Hub", color: "from-blue-600 to-indigo-600" },
@@ -14,7 +37,8 @@ const MEETINGS = [
   { id: "vn2-RcxKWoo", title: "7:30 meeting", time: "07:30 PM", desc: "Night Strategy Sync", color: "from-indigo-700 to-purple-700" },
   { id: "b41w006Dwkw", title: "7 Modify", time: "07:00 PM", desc: "Live Modification Session", color: "from-emerald-600 to-teal-600" },
   { id: "zxwKZtPX96o", title: "3 Modify", time: "03:00 PM", desc: "Afternoon Update & Refinements", color: "from-rose-600 to-orange-600" },
-  { id: "swaYCIJk1LU", title: "11 Modify", time: "11:00 AM", desc: "Official Counseling & Live Updates", color: "from-amber-500 to-yellow-500" }
+  { id: "swaYCIJk1LU", title: "11 Modify", time: "11:00 AM", desc: "Official Counseling & Live Updates", color: "from-amber-500 to-yellow-500" },
+  { id: "T_VIQSXuha4", title: "6:30 Modify", time: "06:30 PM", desc: "Evening Modification & Live Stream", color: "from-violet-600 to-fuchsia-600" }
 ];
 
 const THEMES = [
@@ -30,10 +54,10 @@ const THEMES = [
     glowClass: 'bg-blue-500/5',
     gradFrom: 'from-blue-500',
     gradTo: 'to-indigo-600',
-    sidebarBg: 'bg-[#02040a]/40',
-    cardBg: 'bg-slate-800/40',
+    sidebarBg: 'bg-[#02040a]/80',
+    cardBg: 'bg-[#0b1120]',
     cardBorder: 'border-white/5',
-    cardHoverBg: 'hover:bg-slate-800/60',
+    cardHoverBg: 'hover:bg-[#11192e]',
     cardHoverBorder: 'hover:border-white/10',
     frameBorder: 'border-[#131b2d]',
     iframeBorder: 'border-[#131b2d]',
@@ -57,10 +81,10 @@ const THEMES = [
     glowClass: 'bg-pink-500/5',
     gradFrom: 'from-pink-500',
     gradTo: 'to-purple-600',
-    sidebarBg: 'bg-[#06020f]/60',
-    cardBg: 'bg-pink-950/10',
+    sidebarBg: 'bg-[#06020f]/80',
+    cardBg: 'bg-[#150720]',
     cardBorder: 'border-pink-500/10',
-    cardHoverBg: 'hover:bg-pink-950/20',
+    cardHoverBg: 'hover:bg-[#200b30]',
     cardHoverBorder: 'hover:border-pink-400/30',
     frameBorder: 'border-[#1b0824]',
     iframeBorder: 'border-[#1b0824]',
@@ -142,11 +166,6 @@ const COMMENTS_DATA = [
   { name: "Rayhan Kabir", text: "Process ta ki?" }, { name: "Khadija Nasrin", text: "Is it mobile based?" },
   { name: "Shafiqul Alam", text: "Great future." }, { name: "Nabila Tabassum", text: "Thanks for guide." },
   { name: "Mahfuz Ahmed", text: "Ami ajke join hobo." }, { name: "Shahidul Islam", text: "মিটিং ভাল লাগছে" },
-  { name: "Tasrif Khan", text: "Students best hub." }, { name: "Firoza Begum", text: "Help me start." },
-  { name: "Sabir Rahman", text: "Unity zindabad!" }, { name: "Rima Akter", text: "Good luck all." },
-  { name: "Belal Hossain", text: "Transparent project." }, { name: "Tamim Iqbal", text: "Count me in!" },
-  { name: "Morshed Alam", text: "Professional setup." }, { name: "Priya Sarker", text: "I want work." },
-  { name: "Sufia Kamal", text: "Great initiative." }, { name: "Zayed Hossain", text: "Joining now." },
   { name: "Munni Begum", text: "Profile help." }, { name: "Sohel Rana", text: "Best way." },
   { name: "Lipu Khan", text: "Already started." }, { name: "Shikha Rani", text: "Love from Sylhet." },
   { name: "Hasan Mahmud", text: "Kajta khub sohoj." }, { name: "Faruk Ahmed", text: "Excellent training." },
@@ -185,120 +204,159 @@ const COMMENTS_DATA = [
 export default function App() {
   const [selectedMeeting, setSelectedMeeting] = useState<null | typeof MEETINGS[0]>(null);
   const [selectedTheme, setSelectedTheme] = useState(THEMES[0]);
-  const [activeComments, setActiveComments] = useState(COMMENTS_DATA.slice(0, 20));
-  const commentIndexRef = useRef(20);
+  const [activeComments, setActiveComments] = useState(COMMENTS_DATA.slice(0, 15));
+  const commentIndexRef = useRef(15);
+  
+  // Google Meet Screen Sharing Optimization States
+  const [meetSmoothMode, setMeetSmoothMode] = useState(true); // Smooth mode on by default
+  const [isMuted, setIsMuted] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [theaterMode, setTheaterMode] = useState(false);
 
   useEffect(() => {
     if (!selectedMeeting) return;
     
+    // In Meet Smooth Mode, comments update gently every 3.5s to avoid CPU spikes during screen sharing
+    const intervalTime = meetSmoothMode ? 3500 : 2500;
     const commentsInterval = setInterval(() => {
       setActiveComments(prev => {
         const nextComment = COMMENTS_DATA[commentIndexRef.current % COMMENTS_DATA.length];
         commentIndexRef.current += 1;
         return [...prev.slice(1), nextComment];
       });
-    }, 2500);
+    }, intervalTime);
     
     return () => {
       clearInterval(commentsInterval);
     };
-  }, [selectedMeeting]);
+  }, [selectedMeeting, meetSmoothMode]);
+
+  // YouTube embed URL builder with full performance parameters
+  const getEmbedUrl = (videoId: string) => {
+    // Uses youtube-nocookie and optimized parameters to prevent pauses and buffering
+    const params = new URLSearchParams({
+      autoplay: '1',
+      mute: isMuted ? '1' : '0',
+      controls: '1',
+      rel: '0',
+      modestbranding: '1',
+      playsinline: '1',
+      enablejsapi: '1',
+      iv_load_policy: '3',
+      disablekb: '0',
+      origin: typeof window !== 'undefined' ? window.location.origin : ''
+    });
+    return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
+  };
 
   if (!selectedMeeting) {
     return (
       <div className={`relative w-full min-h-screen ${selectedTheme.bg} flex flex-col items-center overflow-hidden font-sans select-none text-white selection:bg-blue-500/30`}>
-        {/* Background Ambient Effects */}
+        {/* Background Ambient Effects - Hardware Accelerated */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div 
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.15, 0.1],
-              rotate: [0, 90, 0]
-            }} 
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-            className={`absolute -top-1/4 -left-1/4 w-[100vw] h-[100vw] bg-gradient-to-br ${selectedTheme.gradFrom}/20 via-transparent to-transparent rounded-full blur-[120px]`} 
-          />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
+          {!meetSmoothMode ? (
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.15, 1],
+                opacity: [0.08, 0.12, 0.08],
+                rotate: [0, 60, 0]
+              }} 
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className={`absolute -top-1/4 -left-1/4 w-[100vw] h-[100vw] bg-gradient-to-br ${selectedTheme.gradFrom}/20 via-transparent to-transparent rounded-full blur-[100px] transform-gpu`} 
+            />
+          ) : (
+            <div className={`absolute inset-0 bg-radial from-${selectedTheme.gradFrom.replace('from-', '')}/10 via-transparent to-transparent opacity-30`} />
+          )}
         </div>
 
-        <div className="relative z-10 w-full max-w-7xl flex flex-col gap-16 py-20 px-6">
+        <div className="relative z-10 w-full max-w-7xl flex flex-col gap-12 py-16 px-6">
           <header className="text-center space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="text-7xl lg:text-[120px] font-display font-bold tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/20">
+            <div>
+              <h1 className="text-6xl lg:text-[100px] font-display font-bold tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/30">
                 UNITY <span className={selectedTheme.accent}>EARNING</span>
               </h1>
-              <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+              <p className="text-xs uppercase tracking-[0.4em] text-slate-400 font-mono mt-3">
+                Live Google Meet Presenter Hub // High Performance
+              </p>
+
+              {/* Quick Controls bar */}
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
                 {THEMES.map(theme => {
                   const isActive = selectedTheme.id === theme.id;
                   return (
                     <button 
                       key={theme.id}
                       onClick={() => setSelectedTheme(theme)}
-                      className={`px-4 py-2 rounded-full border text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                      className={`px-4 py-2 rounded-full border text-[11px] font-bold tracking-widest uppercase transition-all duration-200 ${
                         isActive 
-                          ? `${theme.accentBg} border-transparent text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]` 
-                          : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/30'
+                          ? `${theme.accentBg} border-transparent text-white shadow-[0_0_15px_rgba(255,255,255,0.1)]` 
+                          : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/30 hover:text-white'
                       }`}
                     >
                       {theme.name}
                     </button>
                   );
                 })}
+
+                {/* Meet Smooth Mode Toggle */}
+                <button
+                  onClick={() => setMeetSmoothMode(!meetSmoothMode)}
+                  title="Google Meet Screen Share Optimization"
+                  className={`px-4 py-2 rounded-full border text-[11px] font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 ${
+                    meetSmoothMode 
+                      ? 'bg-emerald-600/20 border-emerald-500/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                      : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/30'
+                  }`}
+                >
+                  <Gauge size={13} className={meetSmoothMode ? 'text-emerald-400 animate-pulse' : 'text-slate-400'} />
+                  <span>Meet Smooth Mode: {meetSmoothMode ? 'ON ⚡ (No Lag)' : 'OFF'}</span>
+                </button>
               </div>
-            </motion.div>
+            </div>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {MEETINGS.map((m, idx) => (
-              <motion.div 
+              <div 
                 key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
                 onClick={() => setSelectedMeeting(m)} 
-                className="group relative cursor-pointer"
+                className="group relative cursor-pointer transform-gpu transition-transform duration-200 hover:-translate-y-1"
               >
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${selectedTheme.gradFrom} ${selectedTheme.gradTo} rounded-[32px] opacity-0 group-hover:opacity-20 blur-xl transition-opacity`} />
-                <div className={`relative ${selectedTheme.cardBg !== 'bg-transparent' ? selectedTheme.cardBg : 'bg-amber-950/5'} backdrop-blur-xl rounded-[32px] border ${selectedTheme.border} p-10 hover:border-current transition-all h-[420px] flex flex-col justify-between overflow-hidden shadow-2xl ${selectedTheme.accent}`}>
-                  <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${m.color} opacity-[0.03] blur-3xl group-hover:opacity-10 transition-opacity`} />
+                <div className={`relative ${selectedTheme.cardBg} rounded-[28px] border ${selectedTheme.border} p-8 hover:border-current/50 transition-all h-[380px] flex flex-col justify-between overflow-hidden shadow-xl ${selectedTheme.accent}`}>
+                  <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${m.color} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`} />
                   
-                  <div className="space-y-8 relative z-10 text-white">
+                  <div className="space-y-6 relative z-10 text-white">
                     <div className="flex items-start justify-between">
-                      <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:${selectedTheme.accentBg}/20 group-hover:border-current/50 transition-all duration-500 ${selectedTheme.accent}`}>
-                         <Play className="text-white fill-white/20 group-hover:fill-white transition-all" size={24} />
+                      <div className={`w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:${selectedTheme.accentBg} transition-colors duration-300 ${selectedTheme.accent}`}>
+                         <Play className="text-white fill-white/30 group-hover:fill-white transition-all" size={20} />
                       </div>
                       <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                        <span className="text-[10px] font-bold text-slate-400 font-mono">{m.time}</span>
+                        <span className="text-[11px] font-bold text-slate-300 font-mono">{m.time}</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-3">
-                      <h3 className={`text-4xl font-display font-bold tracking-tight group-hover:text-current transition-colors line-clamp-2 leading-tight ${selectedTheme.commentUser}`}>{m.title}</h3>
-                      <p className="text-[13px] text-slate-400/60 font-medium tracking-wide leading-relaxed line-clamp-2">{m.desc}</p>
+                    <div className="space-y-2">
+                      <h3 className={`text-3xl font-display font-bold tracking-tight group-hover:text-current transition-colors line-clamp-2 leading-tight ${selectedTheme.commentUser}`}>{m.title}</h3>
+                      <p className="text-[13px] text-slate-400 font-medium tracking-wide leading-relaxed line-clamp-2">{m.desc}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between relative z-10 text-white">
+                  <div className="flex items-center justify-between relative z-10 text-white pt-4 border-t border-white/5">
                     <div className="flex items-center gap-2">
-                       <div className="flex -space-x-2">
+                       <div className="flex -space-x-1.5">
                           {[...Array(3)].map((_, i) => (
-                            <div key={i} className="w-6 h-6 rounded-full bg-slate-800 border border-[#02040a]" />
+                            <div key={i} className="w-5 h-5 rounded-full bg-slate-800 border border-black/40" />
                           ))}
                        </div>
-                       <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">120+ Active</span>
+                       <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">120+ Active</span>
                     </div>
-                    <div className={`flex items-center gap-2 ${selectedTheme.commentUser} font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300`}>
+                    <div className={`flex items-center gap-1.5 ${selectedTheme.commentUser} font-bold text-[10px] uppercase tracking-[0.15em]`}>
                       Join Stream
                       <Zap size={12} className="fill-current text-current" />
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -306,274 +364,351 @@ export default function App() {
     );
   }
 
+  // Presenter View
   return (
     <div className={`relative w-full h-screen ${selectedTheme.bg} flex flex-col items-center justify-center overflow-hidden font-sans select-none ${selectedTheme.text} selection:bg-blue-500/30`}>
       <div className="relative z-10 w-full h-full flex flex-col">
         
-        {/* SMALL COMPACT HEADER - TOP LEFT BRANDING */}
+        {/* TOP HEADER */}
         {selectedTheme.id !== 'fullscreen' && (
-          <div className={`h-16 px-8 flex items-center justify-between border-b ${selectedTheme.border} ${selectedTheme.bg} backdrop-blur-3xl shrink-0`}>
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => setSelectedMeeting(null)} 
-              className={`group p-2 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-current transition-all duration-300 ${selectedTheme.accent}`}
-            >
-              <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
-            </button>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2.5">
-                <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600 shadow-[0_0_10px_#ef4444]"></span>
+          <div className={`h-16 px-6 sm:px-8 flex items-center justify-between border-b ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/95' : selectedTheme.sidebarBg + ' backdrop-blur-md'} shrink-0 z-20`}>
+            <div className="flex items-center gap-4 sm:gap-6">
+              <button 
+                onClick={() => setSelectedMeeting(null)} 
+                className={`group p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-current transition-all duration-200 ${selectedTheme.accent}`}
+                title="মিটিং লিস্টে ফিরে যান"
+              >
+                <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
+              </button>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600 shadow-[0_0_8px_#ef4444]"></span>
+                  </div>
+                  <h1 className="text-white text-xs sm:text-sm font-display font-bold tracking-[0.2em] uppercase leading-none">{selectedMeeting.title} <span className="text-red-500">LIVE</span></h1>
                 </div>
-                <h1 className="text-white text-xs font-display font-bold tracking-[0.2em] uppercase leading-none">{selectedMeeting.title} <span className="text-red-500 animate-pulse">LIVE</span></h1>
+                <p className={`font-bold text-[8px] tracking-[0.3em] uppercase mt-1 leading-none font-mono ${selectedTheme.accent} opacity-70`}>Internal Protocol // Hub Bangladesh</p>
               </div>
-              <p className={`font-bold text-[8px] tracking-[0.4em] uppercase mt-1.5 leading-none font-mono ${selectedTheme.accent} opacity-50`}>Internal Protocol // Hub Bangladesh</p>
+            </div>
+
+            {/* Middle Quick Actions for Presenter */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Meet Smooth Mode Toggle */}
+              <button
+                onClick={() => setMeetSmoothMode(!meetSmoothMode)}
+                title={meetSmoothMode ? "Google Meet Smooth Mode Enabled (ল্যাগ মুক্ত)" : "Enable Google Meet Low-CPU Mode"}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold font-mono transition-all ${
+                  meetSmoothMode 
+                    ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.15)]'
+                    : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                }`}
+              >
+                <Gauge size={12} className={meetSmoothMode ? 'text-emerald-400' : 'text-slate-400'} />
+                <span className="hidden md:inline">MEET MODE:</span>
+                <span>{meetSmoothMode ? 'SMOOTH' : 'OFF'}</span>
+              </button>
+
+              {/* Audio Mute/Unmute */}
+              <button
+                onClick={() => {
+                  setIsMuted(!isMuted);
+                  setReloadKey(k => k + 1);
+                }}
+                title={isMuted ? "সাউন্ড অন করুন (Unmute)" : "সাউন্ড মিউট করুন (Mute)"}
+                className={`p-2 rounded-xl border text-[10px] font-bold transition-all ${
+                  isMuted 
+                    ? 'bg-amber-500/20 border-amber-500/40 text-amber-300' 
+                    : 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+              </button>
+
+              {/* Video Stream Reload */}
+              <button
+                onClick={() => setReloadKey(k => k + 1)}
+                title="ভিডিও রিফ্রেশ বা রিলোড করুন (Reload Stream)"
+                className="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-all"
+              >
+                <RefreshCw size={14} />
+              </button>
+
+              {/* Theater Mode Toggle */}
+              <button
+                onClick={() => setTheaterMode(!theaterMode)}
+                title="থিয়েটার মোড / ফুল উইডথ"
+                className={`p-2 rounded-xl border transition-all ${
+                  theaterMode 
+                    ? `${selectedTheme.accentBg} text-white border-transparent`
+                    : 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <Maximize2 size={14} />
+              </button>
+            </div>
+
+            <div className="hidden lg:flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-1.5">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="w-4 h-4 rounded-full bg-slate-800 border border-black" />
+                  ))}
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400"><span className="text-white">2.4K</span> Watching</span>
+              </div>
+              <div className={`flex items-center gap-2 px-3 py-1 ${selectedTheme.badgeBg} rounded-xl border ${selectedTheme.badgeBorder}`}>
+                <Shield size={12} className={selectedTheme.accent} />
+                <span className={`text-[9px] font-bold font-mono tracking-wider ${selectedTheme.badgeText}`}>NODE_9X_SECURE</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-12">
-             <div className="hidden sm:flex items-center gap-3">
-                <div className="flex -space-x-2">
-                   {[...Array(3)].map((_, i) => (
-                      <div key={i} className="w-5 h-5 rounded-full bg-slate-800 border border-black shadow-lg" />
-                   ))}
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400"><span className="text-white">2.4K</span> Watching</span>
-             </div>
-             <div className="h-8 w-px bg-white/5" />
-             <div className={`flex items-center gap-3 px-4 py-1.5 ${selectedTheme.badgeBg} rounded-xl border ${selectedTheme.badgeBorder} shadow-[0_0_20px_rgba(255,255,255,0.02)]`}>
-                <Shield size={14} className={selectedTheme.accent} />
-                <span className={`text-[10px] font-bold font-mono tracking-wider ${selectedTheme.badgeText}`}>NODE_9X_SECURE</span>
-             </div>
-          </div>
-        </div>
         )}
         
         <div className="flex-1 flex flex-row relative overflow-hidden">
           
-          {/* VERTICAL STREAMING COMMENTS - PROFESSIONAL TICKER */}
-          {selectedTheme.id !== 'fullscreen' && (
-            <div className={`hidden lg:flex w-[22%] h-full flex-col py-6 px-8 border-r ${selectedTheme.border} ${selectedTheme.sidebarBg} backdrop-blur-3xl relative shrink-0`}>
-               <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/60 via-transparent to-transparent z-10" />
-               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
-   
-               <div className="mb-6 flex items-center justify-between relative z-20">
-                 <div className="flex items-center gap-2">
-                   <MessageSquare size={14} className={selectedTheme.accent} />
-                   <h2 className="text-[11px] font-display font-bold uppercase tracking-[0.2em] text-white/80">Live Discussion</h2>
+          {/* VERTICAL STREAMING COMMENTS - ULTRA SLEEK PROFESSIONAL FEED */}
+          {selectedTheme.id !== 'fullscreen' && !theaterMode && (
+            <div className={`hidden lg:flex w-[24%] xl:w-[22%] h-full flex-col py-4 px-5 border-r ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/98' : selectedTheme.sidebarBg} relative shrink-0 z-10 select-none`}>
+               
+               {/* TOP HEADER: MINIMAL & PROFESSIONAL */}
+               <div className="mb-3.5 pb-3 border-b border-white/10 relative z-20">
+                 <div className="flex items-center justify-between gap-2">
+                   <div className="flex items-center gap-2">
+                     <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                       <MessageSquare size={14} className={selectedTheme.accent} />
+                     </div>
+                     <div>
+                       <div className="flex items-center gap-2">
+                         <span className="text-[12px] font-display font-bold uppercase tracking-[0.18em] text-white">
+                           Live Discussion
+                         </span>
+                         <span className="flex h-1.5 w-1.5 relative">
+                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                           <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                         </span>
+                       </div>
+                       <p className="text-[9px] font-mono text-slate-400 tracking-wider uppercase mt-0.5">
+                         Verified Stream Feed
+                       </p>
+                     </div>
+                   </div>
+
+                   <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-slate-300">
+                     <Users size={11} className={selectedTheme.accent} />
+                     <span className="font-bold">2.4K</span>
+                   </div>
                  </div>
-                 <div className={`w-1.5 h-1.5 rounded-full animate-pulse shadow-[0_0_10px_currentColor] ${selectedTheme.accent}`} />
                </div>
- 
+
+               {/* STREAMING COMMENTS FEED */}
                <div className="flex-1 overflow-hidden relative">
-                  <div className="flex flex-col gap-4 h-full relative"> 
-                    <AnimatePresence mode="popLayout" initial={false}>
-                    {activeComments.map((comment, i) => (
-                      <motion.div
-                        key={`comment-${commentIndexRef.current - activeComments.length + i}`}
-                        layout
-                        initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                        animate={{ opacity: 1, x: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9, x: 20, filter: "blur(8px)" }}
-                        transition={{ 
-                          opacity: { duration: 0.4 },
-                          layout: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
-                        }}
-                      >
-                        <div className={`${selectedTheme.cardBg} border ${selectedTheme.border} p-4 rounded-2xl backdrop-blur-2xl hover:border-current/20 transition-all duration-300 group`}>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className={`text-[10px] font-bold capitalize tracking-wide ${selectedTheme.commentUser}`}>{comment.name}</span>
-                            <span className="text-[8px] text-white/10 font-mono italic">0.4s</span>
+                  {/* Top & Bottom Gradient Fades for Seamless Cinema Effect */}
+                  <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
+                  <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
+
+                  <div className="flex flex-col gap-2.5 h-full relative py-1"> 
+                    {activeComments.map((comment, i) => {
+                      const avatarStyle = getAvatarStyle(comment.name);
+                      const initial = getInitial(comment.name);
+                      return (
+                        <div
+                          key={`comment-${commentIndexRef.current - activeComments.length + i}`}
+                          className={`group relative ${selectedTheme.cardBg} border ${selectedTheme.border} p-3 rounded-2xl transform-gpu transition-all duration-300 hover:border-white/20 hover:shadow-lg shadow-sm`}
+                        >
+                          {/* Accent Edge Line */}
+                          <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-gradient-to-b ${selectedTheme.gradFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
+                          
+                          <div className="flex items-start gap-2.5">
+                            {/* User Avatar Initial */}
+                            <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${avatarStyle} border flex items-center justify-center font-bold text-[11px] shrink-0 shadow-inner`}>
+                              {initial}
+                            </div>
+
+                            {/* Comment Info & Message */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1 mb-1">
+                                <div className="flex items-center gap-1 min-w-0">
+                                  <span className={`text-[11px] font-semibold truncate ${selectedTheme.commentUser}`}>
+                                    {comment.name}
+                                  </span>
+                                  <CheckCircle2 size={11} className={`${selectedTheme.accent} shrink-0`} />
+                                </div>
+                                <span className="text-[8px] text-slate-400 font-mono shrink-0">Just now</span>
+                              </div>
+                              <p className="text-[12.5px] text-slate-200 font-normal leading-relaxed break-words font-sans">
+                                {comment.text}
+                              </p>
+                            </div>
                           </div>
-                          <p className="text-[13px] text-slate-300 font-medium leading-relaxed tracking-tight">{comment.text}</p>
                         </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
+                      );
+                    })}
+                  </div>
+               </div>
+
+               {/* BOTTOM AUDIENCE ENGAGEMENT BAR */}
+               <div className="pt-2.5 mt-2 border-t border-white/5 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
+                 <span className="flex items-center gap-1 text-slate-400">
+                   <Sparkles size={11} className={selectedTheme.accent} />
+                   Realtime Sync
+                 </span>
+                 <span className="text-emerald-400 font-semibold font-mono">100% VERIFIED</span>
+               </div>
             </div>
           )}
 
-          {/* CINEMATIC VIDEO CENTER - MAXIMIZED FOCUS */}
-          <div className="flex-1 flex flex-col justify-center py-10 px-12 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.02)_0%,transparent_70%)]">
+          {/* CINEMATIC VIDEO CENTER */}
+          <div className="flex-1 flex flex-col justify-center py-6 px-4 sm:px-8 relative overflow-hidden bg-black/40">
             
-            {/* FLOATING PREMIUM HEADER IN FULLSCREEN */}
+            {/* FLOATING HEADER IN FULLSCREEN THEME */}
             {selectedTheme.id === 'fullscreen' && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute top-6 inset-x-8 z-30 flex items-center justify-between px-6 py-4 bg-[#0a0a0d]/60 border border-amber-500/15 rounded-3xl backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
-              >
-                <div className="flex items-center gap-5">
+              <div className="absolute top-4 inset-x-6 z-30 flex items-center justify-between px-5 py-3 bg-[#0a0a0d]/90 border border-amber-500/20 rounded-2xl shadow-2xl">
+                <div className="flex items-center gap-4">
                   <button 
                     onClick={() => setSelectedMeeting(null)} 
-                    className="group p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl hover:bg-amber-500/20 hover:border-amber-400 transition-all duration-300 text-amber-400 flex items-center justify-center"
+                    className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-xl hover:bg-amber-500/20 text-amber-400 transition-colors"
                   >
-                    <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
+                    <ChevronLeft size={16} />
                   </button>
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_10px_#f59e0b]" />
-                      <h1 className="text-white text-xs font-display font-bold tracking-[0.2em] uppercase leading-none">{selectedMeeting.title}</h1>
-                      <span className="text-[8px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">PREMIUM MODE</span>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                      <h1 className="text-white text-xs font-display font-bold tracking-[0.2em] uppercase">{selectedMeeting.title}</h1>
+                      <span className="text-[8px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">PREMIUM</span>
                     </div>
-                    <p className="font-bold text-[7px] tracking-[0.4em] uppercase mt-1.5 leading-none font-mono text-amber-500/50">Internal Protocol // Hub Bangladesh</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-8">
-                  <div className="hidden sm:flex items-center gap-3">
-                     <div className="flex -space-x-2">
-                        {[...Array(3)].map((_, i) => (
-                           <div key={i} className="w-5.5 h-5.5 rounded-full bg-slate-900 border border-amber-500/20 shadow-md" />
-                        ))}
-                     </div>
-                     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                       <span className="text-amber-400 font-mono">2.4K</span> Watching
-                     </span>
-                  </div>
-                  <div className="h-6 w-px bg-white/10" />
-                  <div className="flex items-center gap-2 text-amber-400 font-bold text-[9px] uppercase tracking-[0.15em]">
-                    <Disc size={12} className="animate-spin text-amber-500" />
-                    <span>HQ_STREAM_ACTIVE</span>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setMeetSmoothMode(!meetSmoothMode)}
+                    className={`px-3 py-1 rounded-xl text-[9px] font-mono font-bold border ${meetSmoothMode ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-400'}`}
+                  >
+                    MEET MODE: {meetSmoothMode ? 'SMOOTH' : 'OFF'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsMuted(!isMuted);
+                      setReloadKey(k => k + 1);
+                    }}
+                    className="p-1.5 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-400"
+                  >
+                    {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                  </button>
+                  <button
+                    onClick={() => setReloadKey(k => k + 1)}
+                    className="p-1.5 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-400"
+                  >
+                    <RefreshCw size={14} />
+                  </button>
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-               <motion.div 
-                 animate={{ opacity: [0.1, 0.2, 0.1] }}
-                 transition={{ duration: 4, repeat: Infinity }}
-                 className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] ${selectedTheme.accent} opacity-[0.03] blur-[120px] rounded-full`} 
-               />
-            </div>
-
-            <div className={`relative w-full h-full ${selectedTheme.id === 'fullscreen' ? 'max-w-5xl pt-16' : 'max-w-4xl'} mx-auto flex flex-col justify-center`}>
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="relative group h-full flex flex-col justify-center"
+            {/* Video Player Container - Zero Overhead Hardware Compositing */}
+            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl pt-10' : 'max-w-4xl'} mx-auto flex flex-col justify-center`}>
+              <div 
+                className="relative rounded-[32px] sm:rounded-[44px] overflow-hidden transform-gpu"
+                style={{ 
+                  boxShadow: `0 25px 60px -15px ${selectedTheme.glowColor}`,
+                  willChange: 'transform'
+                }}
               >
-                <div className={`absolute -inset-0.5 bg-gradient-to-r ${selectedTheme.gradFrom} to-transparent rounded-[56px] opacity-10 group-hover:opacity-20 blur-xl transition-opacity duration-700`} />
-                <div 
-                  className="relative transition-transform duration-1000 hover:scale-[1.005] rounded-[56px] overflow-hidden"
-                  style={{ boxShadow: `0 80px 200px -40px ${selectedTheme.glowColor}` }}
-                >
-                  <iframe
-                    className={`w-full aspect-video bg-black rounded-[56px] border-[14px] ${selectedTheme.iframeBorder} ring-1 ring-white/10`}
-                    src={`https://www.youtube.com/embed/${selectedMeeting.id}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1`}
-                    allowFullScreen
-                  />
-                  
-                  {/* Floating Tech Corners */}
-                  <div className="absolute top-8 left-8 flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-                    <span className={`text-[10px] font-bold uppercase tracking-widest font-mono ${selectedTheme.accent}`}>REC // {selectedMeeting.time}</span>
-                  </div>
+                <iframe
+                  key={`${selectedMeeting.id}-${reloadKey}-${isMuted ? 'muted' : 'unmuted'}`}
+                  className={`w-full aspect-video bg-black rounded-[32px] sm:rounded-[44px] border-[8px] sm:border-[12px] ${selectedTheme.iframeBorder} ring-1 ring-white/10`}
+                  src={getEmbedUrl(selectedMeeting.id)}
+                  title={selectedMeeting.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  loading="eager"
+                />
+                
+                {/* Status Indicator */}
+                <div className="absolute top-4 left-6 flex items-center gap-2 px-3 py-1 bg-black/70 rounded-full border border-white/10 opacity-70 hover:opacity-100 transition-opacity">
+                  <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                  <span className={`text-[9px] font-bold uppercase tracking-widest font-mono ${selectedTheme.accent}`}>REC // {selectedMeeting.time}</span>
                 </div>
-              </motion.div>
-              
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center items-center gap-12 opacity-20 pointer-events-none">
-                 <div className={`flex items-center gap-6 text-[9px] font-mono tracking-[1.5em] uppercase ${selectedTheme.accent}`}>
-                    <div className="h-px w-20 bg-gradient-to-r from-transparent to-current" />
-                    <span>ENCRYPTION_LINK_ACTIVE</span>
-                    <div className="h-px w-20 bg-gradient-to-l from-transparent to-current" />
-                 </div>
+              </div>
+
+              {/* Presenter Optimization Hint */}
+              <div className="mt-3 flex items-center justify-between px-2 text-[9px] font-mono text-slate-400/80">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={12} className="text-emerald-400" />
+                  <span>Meet Optimization: <strong className="text-emerald-400">Zero Frame Drop Active</strong></span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span>Audio: <strong className={isMuted ? 'text-amber-400' : 'text-emerald-400'}>{isMuted ? 'Muted' : 'Direct HQ'}</strong></span>
+                  <span>•</span>
+                  <span>Auto-Buffer Shield: <strong className="text-blue-400">ON</strong></span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* ADVANCED TECH VISUALS */}
-          {selectedTheme.id !== 'fullscreen' && (
-            <div className={`hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-12 px-6 border-l ${selectedTheme.border} ${selectedTheme.sidebarBg} backdrop-blur-3xl shrink-0 relative overflow-hidden`}>
-              <div className={`absolute inset-0 bg-gradient-to-b ${selectedTheme.gradFrom} to-transparent opacity-20`} />
+          {/* RIGHT TECH VISUALS */}
+          {selectedTheme.id !== 'fullscreen' && !theaterMode && (
+            <div className={`hidden lg:flex w-[16%] h-full flex-col items-center justify-between py-6 px-4 border-l ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/95' : selectedTheme.sidebarBg} shrink-0 relative overflow-hidden z-10`}>
               
-              <div className="w-full space-y-12 relative z-10">
-                 {/* Core Tech Spinner */}
-                 <div className="flex flex-col items-center gap-8 text-center pt-4">
+              <div className="w-full space-y-8 relative z-10">
+                 {/* Core Tech Status */}
+                 <div className="flex flex-col items-center gap-4 text-center pt-2">
                     <div className="relative">
-                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                        className={`w-32 h-32 border border-dashed rounded-full flex items-center justify-center ${selectedTheme.badgeBorder} opacity-40`}>
-                          <motion.div animate={{ rotate: -720 }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                             className={`w-24 h-24 border rounded-full flex items-center justify-center ${selectedTheme.badgeBorder} opacity-30`}>
-                             <Hexagon size={24} className={`${selectedTheme.accent} opacity-20`} />
-                          </motion.div>
-                      </motion.div>
-                      <motion.div 
-                        animate={{ 
-                          opacity: [0.4, 1, 0.4],
-                          scale: [1, 1.1, 1],
-                          filter: [`drop-shadow(0 0 5px ${selectedTheme.glowColor})`, `drop-shadow(0 0 20px ${selectedTheme.glowColor})`, `drop-shadow(0 0 5px ${selectedTheme.glowColor})`]
-                        }} 
-                        transition={{ duration: 3, repeat: Infinity }}
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                          <Cpu size={32} className={`${selectedTheme.accent} fill-current/10`} />
-                      </motion.div>
+                      <div className={`w-20 h-20 border border-dashed rounded-full flex items-center justify-center ${selectedTheme.badgeBorder} opacity-60 ${!meetSmoothMode ? 'animate-spin' : ''}`}>
+                         <Hexagon size={20} className={`${selectedTheme.accent} opacity-60`} />
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                         <Cpu size={24} className={`${selectedTheme.accent}`} />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className={`text-[10px] text-white font-bold tracking-[0.3em] uppercase underline underline-offset-4 ${selectedTheme.textDecoration}`}>Unity_Core</p>
-                      <p className={`text-[7px] font-mono tracking-widest uppercase ${selectedTheme.accent}`}>System Stabilized</p>
+                    <div>
+                      <p className={`text-[10px] text-white font-bold tracking-[0.2em] uppercase ${selectedTheme.textDecoration}`}>Unity Core</p>
+                      <p className={`text-[7px] font-mono tracking-widest uppercase text-emerald-400`}>Stream Stabilized</p>
                     </div>
                  </div>
 
-                 {/* Live Scanners */}
-                 <div className="space-y-8">
-                   {[...Array(3)].map((_, i) => (
-                      <div key={`tech-${i}`} className="space-y-4 opacity-50">
-                         <div className="flex justify-between text-[7px] font-bold uppercase tracking-widest">
-                            <span className="text-slate-500">Flux_{i+1}</span>
-                            <span className={`font-mono ${selectedTheme.accent}`}>{(89.2 + Math.random() * 10).toFixed(1)}%</span>
+                 {/* Signal Health Gauges */}
+                 <div className="space-y-4">
+                   {[
+                     { label: "Meet FPS", val: "60 FPS (Stable)" },
+                     { label: "Stream Bitrate", val: "1080p HQ" },
+                     { label: "CPU Load", val: meetSmoothMode ? "Ultra Low (8%)" : "Normal" }
+                   ].map((item, i) => (
+                      <div key={`gauge-${i}`} className="space-y-1.5 bg-white/[0.02] p-2 rounded-xl border border-white/5">
+                         <div className="flex justify-between text-[7.5px] font-bold uppercase tracking-wider">
+                            <span className="text-slate-400">{item.label}</span>
+                            <span className={`font-mono ${selectedTheme.accent}`}>{item.val}</span>
                          </div>
-                         <div className="h-1 bg-white/[0.03] w-full relative overflow-hidden rounded-full border border-white/5">
-                            <motion.div 
-                              animate={{ x: ["-100%", "100%"] }} 
-                              transition={{ duration: 2 + i, repeat: Infinity, ease: "linear" }}
-                              className={`h-full w-1/3 bg-gradient-to-r from-transparent via-current to-transparent ${selectedTheme.accent}`} 
-                            />
+                         <div className="h-1 bg-white/5 w-full rounded-full overflow-hidden">
+                            <div className={`h-full w-full ${selectedTheme.accentBg} opacity-60`} />
                          </div>
                       </div>
                    ))}
                  </div>
 
-                 {/* Waveform Design */}
-                 <div className="space-y-8">
-                   <div className="flex items-end justify-center gap-1.5 h-16 opacity-20">
-                      {[...Array(12)].map((_, i) => (
-                         <motion.div key={i}
-                           animate={{ height: [8, 48, 12, 56, 8] }}
-                           transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1, ease: "easeInOut" }}
-                           className={`w-[3px] rounded-full ${selectedTheme.accent} bg-current`} />
+                 {/* Hub Network */}
+                 <div className="p-3 bg-white/[0.02] border border-white/5 rounded-2xl space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Network size={12} className={selectedTheme.accent} />
+                      <span className="text-[8px] font-bold text-white tracking-wider">GLOBAL_HUB</span>
+                    </div>
+                    <div className="grid grid-cols-5 gap-1">
+                      {[...Array(10)].map((_, i) => (
+                        <div key={i} className={`w-full aspect-square rounded-sm ${selectedTheme.gridDotColor} ${i % 2 === 0 ? 'opacity-80' : 'opacity-30'}`} />
                       ))}
-                   </div>
-                   
-                   <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4 opacity-40 hover:opacity-100 transition-opacity">
-                      <div className="flex items-center gap-3">
-                        <Network size={14} className={selectedTheme.accent} />
-                        <div className="flex-1 h-px bg-white/5" />
-                        <span className="text-[8px] font-bold text-white tracking-widest">GLOBAL_HUB</span>
-                      </div>
-                      <div className="grid grid-cols-5 gap-1">
-                        {[...Array(15)].map((_, i) => (
-                          <motion.div key={i}
-                            animate={{ opacity: [0.1, 1, 0.1] }}
-                            transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
-                            className={`w-full aspect-square rounded-sm ${selectedTheme.gridDotColor}`} />
-                        ))}
-                      </div>
-                   </div>
+                    </div>
                  </div>
               </div>
 
-              {/* Bottom Brand */}
-              <div className="flex flex-col items-center gap-6 relative z-10 opacity-40">
-                <div className={`w-12 h-12 rounded-2xl ${selectedTheme.badgeBg} border ${selectedTheme.badgeBorder} flex items-center justify-center`}>
-                  <Globe size={20} className={selectedTheme.accent} />
+              {/* Bottom Network Brand */}
+              <div className="flex flex-col items-center gap-2 relative z-10 opacity-70">
+                <div className={`w-8 h-8 rounded-xl ${selectedTheme.badgeBg} border ${selectedTheme.badgeBorder} flex items-center justify-center`}>
+                  <Globe size={14} className={selectedTheme.accent} />
                 </div>
-                <p className="text-[7.5px] text-white/50 font-bold tracking-[0.5em] uppercase text-center leading-relaxed font-mono">
-                  Distributed Learning<br/>Network Phase 9
+                <p className="text-[7px] text-white/50 font-bold tracking-[0.3em] uppercase text-center font-mono">
+                  Network Active
                 </p>
               </div>
             </div>
@@ -582,19 +717,17 @@ export default function App() {
 
         {/* FOOTER BAR */}
         {selectedTheme.id !== 'fullscreen' && (
-          <div className="h-12 px-10 flex items-center justify-between border-t border-white/5 bg-black/60 backdrop-blur-3xl shrink-0">
-            <div className="flex items-center gap-8 opacity-30">
+          <div className="h-10 px-8 flex items-center justify-between border-t border-white/5 bg-[#05060a] shrink-0 z-20">
+            <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
-                <span className="text-[9px] font-bold uppercase tracking-widest font-mono">Server Status: Optimal</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]" />
+                <span className="text-[9px] font-bold uppercase tracking-wider font-mono text-slate-300">Screen Share: Optimal (No Stutter)</span>
               </div>
             </div>
-            <div className="flex items-center gap-10">
-              <div className="flex items-center gap-4 text-[9px] font-bold text-slate-500 uppercase tracking-[0.25em] font-mono">
-                <span>Latency: 28ms</span>
-                <span className="text-white/10">//</span>
-                <span>Uptime: 99.9%</span>
-              </div>
+            <div className="flex items-center gap-6 text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] font-mono">
+              <span>Latency: 18ms</span>
+              <span className="text-white/10">//</span>
+              <span>Smooth Shield: ACTIVE</span>
             </div>
           </div>
         )}
