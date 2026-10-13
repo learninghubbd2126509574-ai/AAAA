@@ -49,7 +49,8 @@ const MEETINGS: MeetingItem[] = [
   { id: "b41w006Dwkw", title: "7 Modify", time: "07:00 PM", desc: "Live Modification & Special Demo", color: "from-emerald-600 to-teal-600", category: "modify", attendees: "3.2K" },
   { id: "zxwKZtPX96o", title: "3 Modify", time: "03:00 PM", desc: "Afternoon Update & Refinements", color: "from-rose-600 to-orange-600", category: "modify", attendees: "2.8K" },
   { id: "swaYCIJk1LU", title: "11 Modify", time: "11:00 AM", desc: "Official Counseling & Updates", color: "from-amber-500 to-yellow-500", category: "modify", attendees: "3.5K" },
-  { id: "T_VIQSXuha4", title: "6:30 Modify", time: "06:30 PM", desc: "Evening Modification & Live Stream", color: "from-violet-600 to-fuchsia-600", category: "modify", attendees: "3.0K" }
+  { id: "T_VIQSXuha4", title: "6:30 Modify", time: "06:30 PM", desc: "Evening Modification & Live Stream", color: "from-violet-600 to-fuchsia-600", category: "modify", attendees: "3.0K" },
+  { id: "xUeS0hPGyFA", title: "6:30 Live", time: "06:30 PM", desc: "Evening Live Interactive Session", color: "from-rose-500 to-red-600", category: "regular", attendees: "2.9K" }
 ];
 
 const THEMES = [
@@ -514,12 +515,14 @@ export default function App() {
               </div>
             </div>
 
-            {/* Zone 2: Professional Live Session Center Banner */}
-            <div className="hidden md:flex items-center gap-3 px-5 py-1.5 bg-white/[0.03] border border-white/10 rounded-2xl shadow-inner">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-display font-bold tracking-[0.25em] uppercase text-white">
-                LIVE SESSION // <span className={selectedTheme.accent}>UNITY EARNING</span>
-              </span>
+            {/* Zone 2: Professional Live Session Center Banner - Centered */}
+            <div className="hidden md:flex items-center justify-center flex-1 mx-4">
+              <div className="flex items-center gap-2.5 px-6 py-2 bg-white/[0.04] border border-white/10 rounded-2xl shadow-inner">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[11px] font-display font-bold tracking-[0.2em] uppercase text-white">
+                  LIVE SESSION <span className="mx-2 text-white/20">|</span> <span className={selectedTheme.accent}>UNITY EARNING</span>
+                </span>
+              </div>
             </div>
 
             {/* Zone 3: Presenter Controls */}
@@ -613,18 +616,23 @@ export default function App() {
                  </div>
                </div>
 
-               {/* Streaming Comments (Continuous smooth flow without long pauses) */}
+               {/* CONTINUOUS SMOOTH SCROLLING COMMENTS FEED */}
                <div className="flex-1 overflow-hidden relative">
                   <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
                   <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
 
-                  <div className="flex flex-col gap-2.5 h-full relative py-1 overflow-y-auto no-scrollbar"> 
-                    {activeComments.map((comment, i) => {
+                  <motion.div 
+                    className="flex flex-col gap-2.5 relative"
+                    style={{ willChange: 'transform' }}
+                    animate={{ y: ["0%", "-50%"] }}
+                    transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+                  >
+                    {[...COMMENTS_DATA, ...COMMENTS_DATA].map((comment, i) => {
                       const avatarStyle = getAvatarStyle(comment.name);
                       const initial = getInitial(comment.name);
                       return (
                         <div
-                          key={`comment-${commentIndexRef.current - activeComments.length + i}`}
+                          key={`comment-${i}`}
                           className={`group relative ${selectedTheme.cardBg} border ${selectedTheme.border} p-3 rounded-2xl transform-gpu transition-all duration-300 hover:border-white/20 hover:shadow-lg shadow-sm`}
                         >
                           <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-gradient-to-b ${selectedTheme.gradFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
@@ -642,7 +650,6 @@ export default function App() {
                                   </span>
                                   <CheckCircle2 size={11} className={`${selectedTheme.accent} shrink-0`} />
                                 </div>
-                                <span className="text-[8px] text-slate-400 font-mono shrink-0">Just now</span>
                               </div>
                               <p className="text-[12.5px] text-slate-200 font-normal leading-relaxed break-words font-sans">
                                 {comment.text}
@@ -652,7 +659,7 @@ export default function App() {
                         </div>
                       );
                     })}
-                  </div>
+                  </motion.div>
                </div>
 
                {/* SLIM & THIN CHAT STATUS BAR */}
@@ -735,6 +742,18 @@ export default function App() {
                 />
               </div>
 
+              {/* Professional Tech Status & Info Strip */}
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                 <div className="bg-white/[0.03] p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-slate-400">SESSION STATUS</span>
+                    <span className="text-[10px] font-mono text-emerald-400 font-bold">STABLE BROADCAST</span>
+                 </div>
+                 <div className="bg-white/[0.03] p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-slate-400">NETWORK NODE</span>
+                    <span className="text-[10px] font-mono text-white font-bold">UNITY_HUB_01</span>
+                 </div>
+              </div>
+
               {/* Dynamic Status Strip */}
               <div className="mt-3 flex items-center justify-between px-2 text-[9px] font-mono text-slate-400/80">
                 <div className="flex items-center gap-2">
@@ -810,18 +829,61 @@ export default function App() {
                     </div>
                  </div>
 
-                 {/* Stream Quality Gauges */}
+                 {/* Stream Quality Gauges & Health Metric */}
                  <div className="space-y-2">
-                   {[
-                     { label: "Screen Share FPS", val: "60 FPS Stable" },
-                     { label: "Broadcast Bitrate", val: "1080p Ultra" },
-                     { label: "CPU Utilization", val: meetSmoothMode ? "8% (Low)" : "22%" }
-                   ].map((g, i) => (
-                      <div key={i} className="bg-white/[0.02] px-3 py-2 rounded-xl border border-white/5 flex items-center justify-between text-[9px] font-mono">
-                        <span className="text-slate-400">{g.label}</span>
-                        <span className={`font-bold ${selectedTheme.commentUser}`}>{g.val}</span>
+                    {[
+                      { label: "Screen Share FPS", val: "60 FPS Stable" },
+                      { label: "Broadcast Bitrate", val: "1080p Ultra" },
+                      { label: "CPU Utilization", val: meetSmoothMode ? "8% (Low)" : "22%" }
+                    ].map((g, i) => (
+                       <div key={i} className="bg-white/[0.02] px-3 py-2 rounded-xl border border-white/5 flex items-center justify-between text-[9px] font-mono">
+                         <span className="text-slate-400">{g.label}</span>
+                         <span className={`font-bold ${selectedTheme.commentUser}`}>{g.val}</span>
+                       </div>
+                    ))}
+                    
+                    {/* Fast Animated Color-Coded Health Metric */}
+                    <div className="bg-gradient-to-br from-slate-900 to-black p-3 rounded-xl border border-white/5 flex flex-col gap-2">
+                       <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400">System Performance</span>
+                       <div className="flex items-center gap-2">
+                         <div className="h-1.5 flex-1 bg-black/40 rounded-full overflow-hidden">
+                           <motion.div 
+                             animate={{ 
+                               width: ["60%", "98%", "40%", "95%"],
+                               backgroundColor: ["#ef4444", "#10b981", "#ef4444", "#10b981"]
+                             }}
+                             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                             className="h-full rounded-full" 
+                           />
+                         </div>
+                         <motion.span 
+                            animate={{ color: ["#ef4444", "#10b981", "#ef4444", "#10b981"] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="text-[9px] font-mono font-bold w-8 text-right"
+                         >
+                           <motion.span 
+                              animate={{ text: ["98%", "60%", "98%", "60%"] }}
+                              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                           />
+                         </motion.span>
+                       </div>
+                    </div>
+
+                    {/* Additional Professional Network Info Panel */}
+                    <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5 space-y-2">
+                      <div className="flex justify-between items-center">
+                         <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold">Node Latency</span>
+                         <span className="text-[8px] font-mono text-blue-400">12ms</span>
                       </div>
-                   ))}
+                      <div className="flex justify-between items-center">
+                         <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold">Packet Loss</span>
+                         <span className="text-[8px] font-mono text-emerald-400">0.01%</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                         <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold">Uptime</span>
+                         <span className="text-[8px] font-mono text-white">99.99%</span>
+                      </div>
+                    </div>
                  </div>
               </div>
 
