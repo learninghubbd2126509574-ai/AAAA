@@ -722,7 +722,7 @@ export default function App() {
             )}
 
             {/* Video Player Box (WATERMARK REMOVED COMPLETELY) */}
-            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl pt-8' : 'max-w-4xl'} mx-auto flex flex-col justify-center`}>
+            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl py-auto' : 'max-w-4xl'} mx-auto flex flex-col justify-center flex-grow`}>
               <div 
                 className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden transform-gpu"
                 style={{ 
