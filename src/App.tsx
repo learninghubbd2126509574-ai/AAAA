@@ -255,11 +255,6 @@ export default function App() {
     setAgenda(prev => prev.map(item => item.id === id ? { ...item, done: !item.done } : item));
   };
 
-  const [reactions, setReactions] = useState({ thumbs: 428, clap: 312, fire: 589, heart: 741, rocket: 295 });
-  const handleReaction = (type: keyof typeof reactions) => {
-    setReactions(prev => ({ ...prev, [type]: prev[type] + 1 }));
-  };
-
   // High reliability embed URL - optimized for zero lag and fast streaming
   const getEmbedUrl = (videoId: string) => {
     const domain = useNoCookie ? 'www.youtube-nocookie.com' : 'www.youtube.com';
@@ -525,8 +520,6 @@ export default function App() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
                 </span>
                 <span className="text-[11px] font-display font-bold tracking-[0.16em] uppercase text-white drop-shadow-sm flex items-center gap-2">
-                  <span>লাইভ সেশন</span>
-                  <span className="text-white/20">•</span>
                   <span className="text-slate-200">LIVE SESSION</span>
                   <span className="text-white/20">|</span>
                   <span className={`${selectedTheme.accent} font-extrabold tracking-[0.18em]`}>UNITY EARNING</span>
@@ -703,8 +696,8 @@ export default function App() {
             </div>
           )}
 
-          {/* CENTER CINEMATIC VIDEO DISPLAY - PERFECTLY CENTERED */}
-          <div className="flex-1 flex flex-col justify-center items-center py-4 px-4 sm:px-8 relative overflow-y-auto overflow-x-hidden bg-black/40">
+          {/* CENTER CINEMATIC VIDEO DISPLAY - POSITIONED LOWER IN CENTER */}
+          <div className="flex-1 flex flex-col justify-center items-center pt-8 sm:pt-14 pb-6 px-4 sm:px-8 relative overflow-y-auto overflow-x-hidden bg-black/40">
             
             {/* Fullscreen Theme Floating Bar */}
             {selectedTheme.id === 'fullscreen' && (
@@ -751,8 +744,8 @@ export default function App() {
               </div>
             )}
 
-            {/* Video Player Box - Positioned in the exact middle with balanced spacing */}
-            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl' : 'max-w-4xl'} mx-auto flex flex-col items-center justify-center my-auto space-y-3`}>
+            {/* Video Player Box - Positioned lower with balanced spacing */}
+            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl' : 'max-w-4xl'} mx-auto flex flex-col items-center justify-center mt-0 sm:mt-2 space-y-3`}>
               <div 
                 className="relative w-full rounded-[28px] sm:rounded-[36px] overflow-hidden transform-gpu"
                 style={{ 
@@ -773,141 +766,50 @@ export default function App() {
                 />
               </div>
 
-              {/* Control & Stream Telemetry Bar below video */}
-              <div className="w-full space-y-2.5">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
-                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Stream Quality</span>
-                      <span className="text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1.5 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        1080P 60FPS STABLE
-                      </span>
-                   </div>
-
-                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
-                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Audio Feed</span>
-                      <button 
-                        onClick={() => {
-                          setIsMuted(!isMuted);
-                          setReloadKey(k => k + 1);
-                        }}
-                        className={`text-[10px] font-mono font-bold text-left hover:underline truncate mt-0.5 flex items-center gap-1 ${isMuted ? 'text-amber-400' : 'text-emerald-400'}`}
-                      >
-                        {isMuted ? <VolumeX size={12} /> : <Volume2 size={12} />}
-                        <span>{isMuted ? 'Muted (Click to Unmute)' : 'Direct Audio ON'}</span>
-                      </button>
-                   </div>
-
-                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
-                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">YouTube CDN</span>
-                      <button 
-                        onClick={() => setUseNoCookie(!useNoCookie)}
-                        title="Click to toggle between youtube.com and youtube-nocookie.com if buffering"
-                        className="text-[10px] font-mono text-blue-400 font-bold text-left hover:underline truncate mt-0.5"
-                      >
-                        {useNoCookie ? 'NO-COOKIE (SAFE)' : 'STANDARD CDN'}
-                      </button>
-                   </div>
-
-                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
-                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Google Meet Mode</span>
-                      <a 
-                        href={`https://www.youtube.com/watch?v=${selectedMeeting.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] font-mono text-amber-400 font-bold hover:underline flex items-center gap-1 mt-0.5"
-                        title="Open in new tab to use Google Meet 'Share a tab' mode (0% CPU, 60fps audio/video)"
-                      >
-                        <span>TAB SHARE (0% LAG)</span>
-                        <ExternalLink size={10} />
-                      </a>
-                   </div>
-                </div>
-
-                {/* Rich Live Session Context & Live Audience Reactions */}
-                <div className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white shadow-md shrink-0">
-                      UE
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-display font-bold text-white tracking-wide">
-                          {selectedMeeting.title}
-                        </h4>
-                        <span className="text-[8px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-                          VERIFIED BROADCAST
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">
-                        {selectedMeeting.desc}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Fast Interactive Reactions */}
-                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10 shrink-0">
-                    <span className="text-[9px] font-mono text-slate-400 mr-1 hidden md:inline">REACTIONS:</span>
-                    <button 
-                      onClick={() => handleReaction('thumbs')}
-                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
-                      title="Like"
-                    >
-                      👍 <span className="text-[9px] font-mono text-slate-300">{reactions.thumbs}</span>
-                    </button>
-                    <button 
-                      onClick={() => handleReaction('fire')}
-                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
-                      title="Fire"
-                    >
-                      🔥 <span className="text-[9px] font-mono text-slate-300">{reactions.fire}</span>
-                    </button>
-                    <button 
-                      onClick={() => handleReaction('clap')}
-                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
-                      title="Clap"
-                    >
-                      👏 <span className="text-[9px] font-mono text-slate-300">{reactions.clap}</span>
-                    </button>
-                    <button 
-                      onClick={() => handleReaction('rocket')}
-                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
-                      title="Rocket"
-                    >
-                      🚀 <span className="text-[9px] font-mono text-slate-300">{reactions.rocket}</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Google Meet Screen Sharing Pro Tip */}
-                <div className="px-3.5 py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between text-[10px] text-blue-200">
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
-                    <span><strong>মিট প্রো-টিপস:</strong> ভিডিও মসৃণ ও পজ-মুক্ত রাখতে Google Meet-এ <strong>'A Tab' (একটি ট্যাব)</strong> সিলেক্ট করে শেয়ার করুন। ফুল স্ক্রিন বা উইন্ডো শেয়ারে ইউটিউব ফ্রেম থ্রটলিং হতে পারে না।</span>
+              {/* Minimal Clean Telemetry Bar below video (All cluttered text & tips removed) */}
+              <div className="w-full flex flex-wrap items-center justify-between gap-3 px-3.5 py-2 bg-white/[0.03] border border-white/5 rounded-2xl text-[9px] font-mono text-slate-400">
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    1080P 60FPS STABLE
                   </span>
-                  <a
+                  <span className="text-white/10">•</span>
+                  <button 
+                    onClick={() => {
+                      setIsMuted(!isMuted);
+                      setReloadKey(k => k + 1);
+                    }}
+                    className={`hover:underline font-bold flex items-center gap-1 ${isMuted ? 'text-amber-400' : 'text-emerald-400'}`}
+                  >
+                    {isMuted ? <VolumeX size={11} /> : <Volume2 size={11} />}
+                    <span>{isMuted ? 'Audio Muted' : 'Direct Audio ON'}</span>
+                  </button>
+                  <span className="text-white/10">•</span>
+                  <button 
+                    onClick={() => setUseNoCookie(!useNoCookie)}
+                    title="Click to toggle between youtube.com and youtube-nocookie.com if buffering"
+                    className="text-blue-400 hover:underline"
+                  >
+                    {useNoCookie ? 'No-Cookie CDN' : 'Standard CDN'}
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <a 
                     href={`https://www.youtube.com/watch?v=${selectedMeeting.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline text-blue-300 font-bold hover:text-white shrink-0 ml-3"
+                    className="text-amber-400 font-bold hover:underline flex items-center gap-1"
+                    title="Open YouTube video in new tab for Google Meet Tab Sharing"
                   >
-                    ট্যাব খুলুন →
+                    <span>TAB SHARE (0% LAG)</span>
+                    <ExternalLink size={10} />
                   </a>
-                </div>
-              </div>
-
-              {/* Dynamic Status Strip */}
-              <div className="w-full flex items-center justify-between px-2 text-[9px] font-mono text-slate-400/80">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck size={12} className="text-emerald-400" />
-                  <span>Google Meet Mode: <strong className="text-emerald-400">Zero-Drop Hardware Rendering</strong></span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span>Audio: <strong className={isMuted ? 'text-amber-400' : 'text-emerald-400'}>{isMuted ? 'Muted' : 'Direct Audio'}</strong></span>
-                  <span>•</span>
-                  <span>Buffer Shield: <strong className="text-blue-400">OPTIMAL</strong></span>
-                  <span>•</span>
-                  <span>Latency: <strong className="text-emerald-400">12ms</strong></span>
+                  <span className="text-white/10">•</span>
+                  <span className="text-emerald-400 font-bold flex items-center gap-1">
+                    <ShieldCheck size={11} />
+                    ZERO-DROP HARDWARE MODE
+                  </span>
                 </div>
               </div>
             </div>
