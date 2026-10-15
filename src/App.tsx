@@ -696,8 +696,8 @@ export default function App() {
             </div>
           )}
 
-          {/* CENTER CINEMATIC VIDEO DISPLAY - POSITIONED LOWER IN CENTER */}
-          <div className="flex-1 flex flex-col justify-center items-center pt-8 sm:pt-14 pb-6 px-4 sm:px-8 relative overflow-y-auto overflow-x-hidden bg-black/40">
+            {/* CENTER CINEMATIC VIDEO DISPLAY - POSITIONED LOWER IN CENTER */}
+          <div className="flex-1 flex flex-col justify-center items-center pt-2 sm:pt-4 pb-6 px-4 sm:px-8 relative overflow-y-auto overflow-x-hidden bg-black/40">
             
             {/* Fullscreen Theme Floating Bar */}
             {selectedTheme.id === 'fullscreen' && (
@@ -745,17 +745,17 @@ export default function App() {
             )}
 
             {/* Video Player Box - Positioned lower with balanced spacing */}
-            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl' : 'max-w-4xl'} mx-auto flex flex-col items-center justify-center mt-0 sm:mt-2 space-y-3`}>
+            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl' : 'max-w-5xl'} mx-auto flex flex-col items-center justify-center mt-2 space-y-4`}>
               <div 
-                className="relative w-full rounded-[28px] sm:rounded-[36px] overflow-hidden transform-gpu"
+                className="relative w-full rounded-[20px] overflow-hidden shadow-2xl border border-white/10 bg-black/50"
                 style={{ 
-                  boxShadow: `0 25px 60px -15px ${selectedTheme.glowColor}`,
+                  boxShadow: `0 0 40px -10px ${selectedTheme.glowColor}`,
                   willChange: 'transform'
                 }}
               >
                 <iframe
                   key={`${selectedMeeting.id}-${reloadKey}-${useNoCookie ? 'nocookie' : 'standard'}`}
-                  className={`w-full aspect-video bg-black rounded-[28px] sm:rounded-[36px] border-[5px] sm:border-[8px] ${selectedTheme.iframeBorder} ring-1 ring-white/10`}
+                  className="w-full aspect-video bg-black"
                   src={getEmbedUrl(selectedMeeting.id)}
                   title={selectedMeeting.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
@@ -766,49 +766,43 @@ export default function App() {
                 />
               </div>
 
-              {/* Minimal Clean Telemetry Bar below video (All cluttered text & tips removed) */}
-              <div className="w-full flex flex-wrap items-center justify-between gap-3 px-3.5 py-2 bg-white/[0.03] border border-white/5 rounded-2xl text-[9px] font-mono text-slate-400">
-                <div className="flex items-center gap-3">
+              {/* Minimal Clean Telemetry Bar below video */}
+              <div className="w-full flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-black/40 border border-white/10 rounded-2xl text-[10px] font-mono text-slate-300 shadow-inner">
+                <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    1080P 60FPS STABLE
+                    1080P 60FPS
                   </span>
-                  <span className="text-white/10">•</span>
                   <button 
                     onClick={() => {
                       setIsMuted(!isMuted);
                       setReloadKey(k => k + 1);
                     }}
-                    className={`hover:underline font-bold flex items-center gap-1 ${isMuted ? 'text-amber-400' : 'text-emerald-400'}`}
+                    className={`hover:text-white font-bold flex items-center gap-1 ${isMuted ? 'text-amber-400' : 'text-emerald-400'}`}
                   >
-                    {isMuted ? <VolumeX size={11} /> : <Volume2 size={11} />}
-                    <span>{isMuted ? 'Audio Muted' : 'Direct Audio ON'}</span>
+                    {isMuted ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                    <span>{isMuted ? 'Muted' : 'Audio ON'}</span>
                   </button>
-                  <span className="text-white/10">•</span>
                   <button 
                     onClick={() => setUseNoCookie(!useNoCookie)}
-                    title="Click to toggle between youtube.com and youtube-nocookie.com if buffering"
-                    className="text-blue-400 hover:underline"
+                    className="text-blue-400 hover:text-white"
                   >
-                    {useNoCookie ? 'No-Cookie CDN' : 'Standard CDN'}
+                    {useNoCookie ? 'No-Cookie' : 'Standard'}
                   </button>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <a 
                     href={`https://www.youtube.com/watch?v=${selectedMeeting.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-amber-400 font-bold hover:underline flex items-center gap-1"
-                    title="Open YouTube video in new tab for Google Meet Tab Sharing"
+                    className="text-amber-400 font-bold hover:text-white flex items-center gap-1"
                   >
-                    <span>TAB SHARE (0% LAG)</span>
-                    <ExternalLink size={10} />
+                    TAB SHARE <ExternalLink size={10} />
                   </a>
-                  <span className="text-white/10">•</span>
                   <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <ShieldCheck size={11} />
-                    ZERO-DROP HARDWARE MODE
+                    <ShieldCheck size={12} />
+                    HW ACCEL
                   </span>
                 </div>
               </div>
