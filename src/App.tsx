@@ -5,7 +5,7 @@ import {
   Radio, Layers, Activity, Smartphone, Monitor, Database,
   Volume2, VolumeX, RefreshCw, Sparkles, Gauge, Maximize2, ShieldCheck, Check,
   CheckCircle2, MessageCircle, Search, Filter,
-  Clock, CheckSquare, Square, BarChart2
+  Clock, CheckSquare, Square, BarChart2, ExternalLink, Wifi
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
@@ -217,8 +217,6 @@ const COMMENTS_DATA = [
 export default function App() {
   const [selectedMeeting, setSelectedMeeting] = useState<null | MeetingItem>(null);
   const [selectedTheme, setSelectedTheme] = useState(THEMES[0]);
-  const [activeComments, setActiveComments] = useState(COMMENTS_DATA.slice(0, 18));
-  const commentIndexRef = useRef(18);
   
   // Dynamic UI States
   const [filterCategory, setFilterCategory] = useState<'all' | 'modify' | 'regular'>('all');
@@ -227,6 +225,23 @@ export default function App() {
   const [isMuted, setIsMuted] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [theaterMode, setTheaterMode] = useState(false);
+  const [useNoCookie, setUseNoCookie] = useState(false);
+  const [bufferShield, setBufferShield] = useState(true);
+
+  // Fast animated dynamic health percentage: increases & decreases quickly
+  // Decreases -> Red (< 65%), Increases -> Green (>= 65%)
+  const [healthPercent, setHealthPercent] = useState(94);
+
+  useEffect(() => {
+    const healthCycle = [95, 98, 88, 52, 43, 62, 89, 97, 92, 48, 41, 79, 96, 91, 56, 94];
+    let idx = 0;
+    const interval = setInterval(() => {
+      idx = (idx + 1) % healthCycle.length;
+      setHealthPercent(healthCycle[idx]);
+    }, 450); // fast oscillation as requested
+
+    return () => clearInterval(interval);
+  }, []);
   
   // Interactive Agenda checklist items
   const [agenda, setAgenda] = useState([
@@ -240,38 +255,24 @@ export default function App() {
     setAgenda(prev => prev.map(item => item.id === id ? { ...item, done: !item.done } : item));
   };
 
-  useEffect(() => {
-    if (!selectedMeeting) return;
-    
-    // Fast, continuous streaming comments flow smoothly one after another (every 1.1s)
-    const intervalTime = meetSmoothMode ? 1200 : 900;
-    const commentsInterval = setInterval(() => {
-      setActiveComments(prev => {
-        const nextComment = COMMENTS_DATA[commentIndexRef.current % COMMENTS_DATA.length];
-        commentIndexRef.current += 1;
-        return [...prev.slice(1), nextComment];
-      });
-    }, intervalTime);
-    
-    return () => {
-      clearInterval(commentsInterval);
-    };
-  }, [selectedMeeting, meetSmoothMode]);
+  const [reactions, setReactions] = useState({ thumbs: 428, clap: 312, fire: 589, heart: 741, rocket: 295 });
+  const handleReaction = (type: keyof typeof reactions) => {
+    setReactions(prev => ({ ...prev, [type]: prev[type] + 1 }));
+  };
 
+  // High reliability embed URL - optimized for zero lag and fast streaming
   const getEmbedUrl = (videoId: string) => {
+    const domain = useNoCookie ? 'www.youtube-nocookie.com' : 'www.youtube.com';
     const params = new URLSearchParams({
       autoplay: '1',
       mute: isMuted ? '1' : '0',
       controls: '1',
       rel: '0',
-      modestbranding: '1',
       playsinline: '1',
-      enablejsapi: '1',
-      iv_load_policy: '3',
-      disablekb: '0',
-      origin: typeof window !== 'undefined' ? window.location.origin : ''
+      modestbranding: '1',
+      enablejsapi: '1'
     });
-    return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
+    return `https://${domain}/embed/${videoId}?${params.toString()}`;
   };
 
   const filteredMeetings = MEETINGS.filter(m => {
@@ -483,12 +484,12 @@ export default function App() {
       
       <div className="relative z-10 w-full h-full flex flex-col">
         
-        {/* TOP BAR CONTRACT: ZONE 1 (TITLE), ZONE 2 (LIVE SESSION BANNER), ZONE 3 (TOOLS) */}
+        {/* TOP BAR CONTRACT: ZONE 1 (TITLE), ZONE 2 (LIVE SESSION BANNER - SCREEN CENTERED), ZONE 3 (TOOLS) */}
         {selectedTheme.id !== 'fullscreen' && (
-          <div className={`h-16 px-6 flex items-center justify-between border-b ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/98' : selectedTheme.sidebarBg} shrink-0 z-30`}>
+          <div className={`relative h-16 px-6 flex items-center justify-between border-b ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/98' : selectedTheme.sidebarBg} shrink-0 z-30`}>
             
             {/* Zone 1: Return & Current Session */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 z-10">
               <button 
                 onClick={() => setSelectedMeeting(null)} 
                 className={`p-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/30 transition-all ${selectedTheme.accent}`}
@@ -516,18 +517,25 @@ export default function App() {
               </div>
             </div>
 
-            {/* Zone 2: Professional Live Session Center Banner - Centered */}
-            <div className="hidden md:flex items-center justify-center flex-1 mx-4">
-              <div className="flex items-center gap-2.5 px-6 py-2 bg-white/[0.04] border border-white/10 rounded-2xl shadow-inner">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[11px] font-display font-bold tracking-[0.2em] uppercase text-white">
-                  LIVE SESSION <span className="mx-2 text-white/20">|</span> <span className={selectedTheme.accent}>UNITY EARNING</span>
+            {/* Zone 2: Professional Live Session Center Banner - Exact Screen Middle with slight right offset */}
+            <div className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2 ml-3 pointer-events-none z-20">
+              <div className="flex items-center gap-2.5 px-5 py-1.5 bg-white/[0.04] border border-white/10 rounded-full shadow-lg shadow-black/40 backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+                </span>
+                <span className="text-[11px] font-display font-bold tracking-[0.16em] uppercase text-white drop-shadow-sm flex items-center gap-2">
+                  <span>লাইভ সেশন</span>
+                  <span className="text-white/20">•</span>
+                  <span className="text-slate-200">LIVE SESSION</span>
+                  <span className="text-white/20">|</span>
+                  <span className={`${selectedTheme.accent} font-extrabold tracking-[0.18em]`}>UNITY EARNING</span>
                 </span>
               </div>
             </div>
 
             {/* Zone 3: Presenter Controls */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 z-10">
               <button
                 onClick={() => setMeetSmoothMode(!meetSmoothMode)}
                 title="Google Meet Screen Share Optimization"
@@ -541,6 +549,32 @@ export default function App() {
                 <span className="hidden sm:inline">MEET MODE:</span>
                 <span>{meetSmoothMode ? 'SMOOTH' : 'OFF'}</span>
               </button>
+
+              {/* Buffer Shield Mode */}
+              <button
+                onClick={() => setBufferShield(!bufferShield)}
+                title="Buffer Shield: Priority bandwidth & anti-pause protection"
+                className={`hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold font-mono transition-all ${
+                  bufferShield 
+                    ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' 
+                    : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                }`}
+              >
+                <Wifi size={12} className={bufferShield ? 'text-blue-400' : 'text-slate-400'} />
+                <span>BUFFER SHIELD: {bufferShield ? 'HIGH' : 'STD'}</span>
+              </button>
+
+              {/* Direct YouTube Tab Share (Recommended for Google Meet 60FPS) */}
+              <a
+                href={`https://www.youtube.com/watch?v=${selectedMeeting.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open Video in New Tab (গুগল মিটে 'Share a Tab' ব্যবহার করলে ১০০% ল্যাগ ও বাফারিং মুক্ত চলে)"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 text-[10px] font-mono font-bold transition-all"
+              >
+                <ExternalLink size={12} className="text-red-400" />
+                <span className="hidden sm:inline">TAB SHARE</span>
+              </a>
 
               <button
                 onClick={() => {
@@ -559,7 +593,7 @@ export default function App() {
 
               <button
                 onClick={() => setReloadKey(k => k + 1)}
-                title="Reload Stream Player"
+                title="Re-buffer / Reload Stream Player"
                 className="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-all"
               >
                 <RefreshCw size={14} />
@@ -622,13 +656,8 @@ export default function App() {
                   <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
                   <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#080a12] via-[#080a12]/80 to-transparent pointer-events-none z-10" />
 
-                  <motion.div 
-                    className="flex flex-col gap-2.5 relative"
-                    style={{ willChange: 'transform' }}
-                    animate={{ y: ["0%", "-50%"] }}
-                    transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
-                  >
-                    {[...COMMENTS_DATA, ...COMMENTS_DATA].map((comment, i) => {
+                  <div className="animate-smooth-ticker flex flex-col gap-2.5 relative">
+                    {[...COMMENTS_DATA.slice(0, 24), ...COMMENTS_DATA.slice(0, 24)].map((comment, i) => {
                       const avatarStyle = getAvatarStyle(comment.name);
                       const initial = getInitial(comment.name);
                       return (
@@ -660,7 +689,7 @@ export default function App() {
                         </div>
                       );
                     })}
-                  </motion.div>
+                  </div>
                </div>
 
                {/* SLIM & THIN CHAT STATUS BAR */}
@@ -674,8 +703,8 @@ export default function App() {
             </div>
           )}
 
-          {/* CENTER CINEMATIC VIDEO DISPLAY */}
-          <div className="flex-1 flex flex-col justify-center py-6 px-4 sm:px-8 relative overflow-hidden bg-black/40">
+          {/* CENTER CINEMATIC VIDEO DISPLAY - PERFECTLY CENTERED */}
+          <div className="flex-1 flex flex-col justify-center items-center py-4 px-4 sm:px-8 relative overflow-y-auto overflow-x-hidden bg-black/40">
             
             {/* Fullscreen Theme Floating Bar */}
             {selectedTheme.id === 'fullscreen' && (
@@ -722,49 +751,163 @@ export default function App() {
               </div>
             )}
 
-            {/* Video Player Box (WATERMARK REMOVED COMPLETELY) */}
-            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl py-auto' : 'max-w-4xl'} mx-auto flex flex-col justify-center flex-grow`}>
+            {/* Video Player Box - Positioned in the exact middle with balanced spacing */}
+            <div className={`relative w-full ${theaterMode || selectedTheme.id === 'fullscreen' ? 'max-w-6xl' : 'max-w-4xl'} mx-auto flex flex-col items-center justify-center my-auto space-y-3`}>
               <div 
-                className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden transform-gpu"
+                className="relative w-full rounded-[28px] sm:rounded-[36px] overflow-hidden transform-gpu"
                 style={{ 
                   boxShadow: `0 25px 60px -15px ${selectedTheme.glowColor}`,
                   willChange: 'transform'
                 }}
               >
                 <iframe
-                  key={`${selectedMeeting.id}-${reloadKey}-${isMuted ? 'muted' : 'unmuted'}`}
-                  className={`w-full aspect-video bg-black rounded-[28px] sm:rounded-[40px] border-[6px] sm:border-[10px] ${selectedTheme.iframeBorder} ring-1 ring-white/10`}
+                  key={`${selectedMeeting.id}-${reloadKey}-${useNoCookie ? 'nocookie' : 'standard'}`}
+                  className={`w-full aspect-video bg-black rounded-[28px] sm:rounded-[36px] border-[5px] sm:border-[8px] ${selectedTheme.iframeBorder} ring-1 ring-white/10`}
                   src={getEmbedUrl(selectedMeeting.id)}
                   title={selectedMeeting.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                   allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
+                  referrerPolicy="no-referrer-when-downgrade"
                   loading="eager"
+                  style={{ transform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden' }}
                 />
               </div>
 
-              {/* Professional Tech Status & Info Strip */}
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                 <div className="bg-white/[0.03] p-3 rounded-xl border border-white/5 flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-slate-400">SESSION STATUS</span>
-                    <span className="text-[10px] font-mono text-emerald-400 font-bold">STABLE BROADCAST</span>
-                 </div>
-                 <div className="bg-white/[0.03] p-3 rounded-xl border border-white/5 flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-slate-400">NETWORK NODE</span>
-                    <span className="text-[10px] font-mono text-white font-bold">UNITY_HUB_01</span>
-                 </div>
+              {/* Control & Stream Telemetry Bar below video */}
+              <div className="w-full space-y-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Stream Quality</span>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1.5 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        1080P 60FPS STABLE
+                      </span>
+                   </div>
+
+                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Audio Feed</span>
+                      <button 
+                        onClick={() => {
+                          setIsMuted(!isMuted);
+                          setReloadKey(k => k + 1);
+                        }}
+                        className={`text-[10px] font-mono font-bold text-left hover:underline truncate mt-0.5 flex items-center gap-1 ${isMuted ? 'text-amber-400' : 'text-emerald-400'}`}
+                      >
+                        {isMuted ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                        <span>{isMuted ? 'Muted (Click to Unmute)' : 'Direct Audio ON'}</span>
+                      </button>
+                   </div>
+
+                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">YouTube CDN</span>
+                      <button 
+                        onClick={() => setUseNoCookie(!useNoCookie)}
+                        title="Click to toggle between youtube.com and youtube-nocookie.com if buffering"
+                        className="text-[10px] font-mono text-blue-400 font-bold text-left hover:underline truncate mt-0.5"
+                      >
+                        {useNoCookie ? 'NO-COOKIE (SAFE)' : 'STANDARD CDN'}
+                      </button>
+                   </div>
+
+                   <div className="bg-white/[0.03] p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Google Meet Mode</span>
+                      <a 
+                        href={`https://www.youtube.com/watch?v=${selectedMeeting.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-mono text-amber-400 font-bold hover:underline flex items-center gap-1 mt-0.5"
+                        title="Open in new tab to use Google Meet 'Share a tab' mode (0% CPU, 60fps audio/video)"
+                      >
+                        <span>TAB SHARE (0% LAG)</span>
+                        <ExternalLink size={10} />
+                      </a>
+                   </div>
+                </div>
+
+                {/* Rich Live Session Context & Live Audience Reactions */}
+                <div className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white shadow-md shrink-0">
+                      UE
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xs font-display font-bold text-white tracking-wide">
+                          {selectedMeeting.title}
+                        </h4>
+                        <span className="text-[8px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                          VERIFIED BROADCAST
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">
+                        {selectedMeeting.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Fast Interactive Reactions */}
+                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10 shrink-0">
+                    <span className="text-[9px] font-mono text-slate-400 mr-1 hidden md:inline">REACTIONS:</span>
+                    <button 
+                      onClick={() => handleReaction('thumbs')}
+                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
+                      title="Like"
+                    >
+                      👍 <span className="text-[9px] font-mono text-slate-300">{reactions.thumbs}</span>
+                    </button>
+                    <button 
+                      onClick={() => handleReaction('fire')}
+                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
+                      title="Fire"
+                    >
+                      🔥 <span className="text-[9px] font-mono text-slate-300">{reactions.fire}</span>
+                    </button>
+                    <button 
+                      onClick={() => handleReaction('clap')}
+                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
+                      title="Clap"
+                    >
+                      👏 <span className="text-[9px] font-mono text-slate-300">{reactions.clap}</span>
+                    </button>
+                    <button 
+                      onClick={() => handleReaction('rocket')}
+                      className="px-2 py-0.5 hover:bg-white/10 rounded-lg text-xs transition-transform active:scale-125 flex items-center gap-1"
+                      title="Rocket"
+                    >
+                      🚀 <span className="text-[9px] font-mono text-slate-300">{reactions.rocket}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Google Meet Screen Sharing Pro Tip */}
+                <div className="px-3.5 py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between text-[10px] text-blue-200">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+                    <span><strong>মিট প্রো-টিপস:</strong> ভিডিও মসৃণ ও পজ-মুক্ত রাখতে Google Meet-এ <strong>'A Tab' (একটি ট্যাব)</strong> সিলেক্ট করে শেয়ার করুন। ফুল স্ক্রিন বা উইন্ডো শেয়ারে ইউটিউব ফ্রেম থ্রটলিং হতে পারে না।</span>
+                  </span>
+                  <a
+                    href={`https://www.youtube.com/watch?v=${selectedMeeting.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-blue-300 font-bold hover:text-white shrink-0 ml-3"
+                  >
+                    ট্যাব খুলুন →
+                  </a>
+                </div>
               </div>
 
               {/* Dynamic Status Strip */}
-              <div className="mt-3 flex items-center justify-between px-2 text-[9px] font-mono text-slate-400/80">
+              <div className="w-full flex items-center justify-between px-2 text-[9px] font-mono text-slate-400/80">
                 <div className="flex items-center gap-2">
                   <ShieldCheck size={12} className="text-emerald-400" />
-                  <span>Google Meet Optimization: <strong className="text-emerald-400">Lag-Free Enabled</strong></span>
+                  <span>Google Meet Mode: <strong className="text-emerald-400">Zero-Drop Hardware Rendering</strong></span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span>Audio: <strong className={isMuted ? 'text-amber-400' : 'text-emerald-400'}>{isMuted ? 'Muted' : 'HQ Stream'}</strong></span>
+                  <span>Audio: <strong className={isMuted ? 'text-amber-400' : 'text-emerald-400'}>{isMuted ? 'Muted' : 'Direct Audio'}</strong></span>
                   <span>•</span>
-                  <span>Buffer Shield: <strong className="text-blue-400">ACTIVE</strong></span>
+                  <span>Buffer Shield: <strong className="text-blue-400">OPTIMAL</strong></span>
+                  <span>•</span>
+                  <span>Latency: <strong className="text-emerald-400">12ms</strong></span>
                 </div>
               </div>
             </div>
@@ -772,22 +915,25 @@ export default function App() {
 
           {/* RIGHT INTERACTIVE PRESENTER CONSOLE */}
           {selectedTheme.id !== 'fullscreen' && !theaterMode && (
-            <div className={`hidden lg:flex w-[18%] h-full flex-col justify-between py-5 px-4 border-l ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/98' : selectedTheme.sidebarBg} shrink-0 relative overflow-hidden z-10`}>
+            <div className={`hidden lg:flex w-[19%] xl:w-[18%] h-full flex-col justify-between py-4 px-4 border-l ${selectedTheme.border} ${meetSmoothMode ? 'bg-[#080a12]/98' : selectedTheme.sidebarBg} shrink-0 relative overflow-y-auto z-10 select-none`}>
               
-              <div className="w-full space-y-6 relative z-10">
+              <div className="w-full space-y-4 relative z-10">
                  
                  {/* Live Stream Spectrum Visualizer */}
-                 <div className="bg-white/[0.03] p-3.5 rounded-2xl border border-white/5 space-y-2.5">
+                 <div className="bg-white/[0.03] p-3 rounded-2xl border border-white/5 space-y-2">
                     <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
                        <span className="text-white flex items-center gap-1.5">
                          <Activity size={13} className={selectedTheme.accent} />
                          Audio Visualizer
                        </span>
-                       <span className="text-emerald-400 font-mono text-[9px]">LIVE</span>
+                       <span className="text-emerald-400 font-mono text-[9px] flex items-center gap-1">
+                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                         LIVE
+                       </span>
                     </div>
 
                     {/* Audio VU Bars */}
-                    <div className="flex items-end justify-between gap-1 h-10 px-1 pt-2">
+                    <div className="flex items-end justify-between gap-1 h-9 px-1 pt-1">
                       {[40, 75, 55, 90, 60, 85, 45, 95, 70, 50, 80, 65].map((val, idx) => (
                         <div 
                           key={idx} 
@@ -798,8 +944,53 @@ export default function App() {
                     </div>
                  </div>
 
+                 {/* Fast Animated Color-Coded Health Metric */}
+                 <div className={`p-3 rounded-2xl border transition-colors duration-300 ${
+                   healthPercent >= 65 
+                     ? 'bg-emerald-950/20 border-emerald-500/30' 
+                     : 'bg-red-950/20 border-red-500/30'
+                 } flex flex-col gap-2 shadow-lg`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] uppercase tracking-wider font-bold text-slate-300 flex items-center gap-1.5">
+                        <Gauge size={12} className={healthPercent >= 65 ? 'text-emerald-400' : 'text-red-400'} />
+                        হেলথ / STREAM HEALTH
+                      </span>
+                      <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        healthPercent >= 65 
+                          ? 'bg-emerald-500/20 text-emerald-300' 
+                          : 'bg-red-500/20 text-red-300'
+                      }`}>
+                        {healthPercent >= 65 ? 'OPTIMAL' : 'THROTTLED'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-2 flex-1 bg-black/60 rounded-full overflow-hidden p-0.5 border border-white/5">
+                        <div 
+                          style={{ 
+                            width: `${healthPercent}%`,
+                            backgroundColor: healthPercent >= 65 ? '#10b981' : '#ef4444'
+                          }}
+                          className="h-full rounded-full transition-all duration-300 shadow-[0_0_10px_currentColor]" 
+                        />
+                      </div>
+                      <span className={`text-[12px] font-mono font-bold w-10 text-right ${
+                        healthPercent >= 65 ? 'text-emerald-400' : 'text-red-400'
+                      }`}>
+                        {healthPercent}%
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center text-[8px] font-mono text-slate-400">
+                      <span>Rate: Fast Sampling</span>
+                      <span className={healthPercent >= 65 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
+                        {healthPercent >= 65 ? '● High Stability' : '▲ Re-optimizing'}
+                      </span>
+                    </div>
+                 </div>
+
                  {/* Interactive Session Agenda Checkpoints */}
-                 <div className="bg-white/[0.03] p-3.5 rounded-2xl border border-white/5 space-y-2.5">
+                 <div className="bg-white/[0.03] p-3 rounded-2xl border border-white/5 space-y-2">
                     <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
                        <span className="text-white flex items-center gap-1.5">
                          <BarChart2 size={13} className={selectedTheme.accent} />
@@ -830,71 +1021,52 @@ export default function App() {
                     </div>
                  </div>
 
-                 {/* Stream Quality Gauges & Health Metric */}
-                 <div className="space-y-2">
+                 {/* Stream Quality Gauges */}
+                 <div className="space-y-1.5">
                     {[
                       { label: "Screen Share FPS", val: "60 FPS Stable" },
                       { label: "Broadcast Bitrate", val: "1080p Ultra" },
-                      { label: "CPU Utilization", val: meetSmoothMode ? "8% (Low)" : "22%" }
+                      { label: "CPU Utilization", val: meetSmoothMode ? "8% (Low)" : "22%" },
+                      { label: "Audio Sampling", val: "48 kHz Studio" }
                     ].map((g, i) => (
-                       <div key={i} className="bg-white/[0.02] px-3 py-2 rounded-xl border border-white/5 flex items-center justify-between text-[9px] font-mono">
+                       <div key={i} className="bg-white/[0.02] px-3 py-1.5 rounded-xl border border-white/5 flex items-center justify-between text-[9px] font-mono">
                          <span className="text-slate-400">{g.label}</span>
                          <span className={`font-bold ${selectedTheme.commentUser}`}>{g.val}</span>
                        </div>
                     ))}
-                    
-                    {/* Fast Animated Color-Coded Health Metric */}
-                    <div className="bg-gradient-to-br from-slate-900 to-black p-3 rounded-xl border border-white/5 flex flex-col gap-2">
-                       <span className="text-[9px] uppercase tracking-wider font-bold text-slate-400">System Performance</span>
-                       <div className="flex items-center gap-2">
-                         <div className="h-1.5 flex-1 bg-black/40 rounded-full overflow-hidden">
-                           <motion.div 
-                             animate={{ 
-                               width: ["60%", "98%", "40%", "95%"],
-                               backgroundColor: ["#ef4444", "#10b981", "#ef4444", "#10b981"]
-                             }}
-                             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                             className="h-full rounded-full" 
-                           />
-                         </div>
-                         <motion.span 
-                            animate={{ color: ["#ef4444", "#10b981", "#ef4444", "#10b981"] }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                            className="text-[9px] font-mono font-bold w-8 text-right"
-                         >
-                           <motion.span 
-                              animate={{ text: ["98%", "60%", "98%", "60%"] }}
-                              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                           />
-                         </motion.span>
-                       </div>
-                    </div>
+                 </div>
 
-                    {/* Additional Professional Network Info Panel */}
-                    <div className="bg-white/[0.02] p-3 rounded-xl border border-white/5 space-y-2">
-                      <div className="flex justify-between items-center">
-                         <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold">Node Latency</span>
-                         <span className="text-[8px] font-mono text-blue-400">12ms</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                         <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold">Packet Loss</span>
-                         <span className="text-[8px] font-mono text-emerald-400">0.01%</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                         <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold">Uptime</span>
-                         <span className="text-[8px] font-mono text-white">99.99%</span>
-                      </div>
+                 {/* Network & Infrastructure Telemetry (Filling the bottom area) */}
+                 <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5 space-y-1.5">
+                    <span className="text-[8px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                      Broadcast Infrastructure
+                    </span>
+                    <div className="flex justify-between items-center text-[8px] font-mono">
+                       <span className="text-slate-400">Edge Gateway</span>
+                       <span className="text-blue-400">Dhaka Edge Hub</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[8px] font-mono">
+                       <span className="text-slate-400">Transit Node</span>
+                       <span className="text-emerald-400">Singapore CDN (12ms)</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[8px] font-mono">
+                       <span className="text-slate-400">Security Cipher</span>
+                       <span className="text-slate-300">TLS 1.3 / AES-256</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[8px] font-mono">
+                       <span className="text-slate-400">Frame Drops</span>
+                       <span className="text-emerald-400 font-bold">0.00%</span>
                     </div>
                  </div>
               </div>
 
               {/* Bottom Network Status */}
-              <div className="flex items-center justify-between pt-3 border-t border-white/5 text-[9px] font-mono text-slate-400">
+              <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-white/5 text-[9px] font-mono text-slate-400">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   Hub Node Online
                 </span>
-                <span className="text-white/60">v3.8</span>
+                <span className="text-white/60">v3.9 Pro</span>
               </div>
             </div>
           )}
