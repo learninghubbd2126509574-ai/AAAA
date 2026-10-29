@@ -52,7 +52,8 @@ const MEETINGS: MeetingItem[] = [
   { id: "T_VIQSXuha4", title: "6:30 Modify", time: "06:30 PM", desc: "Evening Modification & Live Stream", color: "from-violet-600 to-fuchsia-600", category: "modify", attendees: "3.0K" },
   { id: "xUeS0hPGyFA", title: "6:30 Live", time: "06:30 PM", desc: "Evening Live Interactive Session", color: "from-rose-500 to-red-600", category: "regular", attendees: "2.9K" },
   { id: "2YKsNlbCkrM", title: "3:10 Live", time: "03:10 PM", desc: "Afternoon Live Strategy & Interactive Hub", color: "from-amber-600 to-orange-600", category: "regular", attendees: "3.1K" },
-  { id: "vyGX5VI7CKA", title: "11:10 Live", time: "11:10 AM", desc: "Morning Live Interactive Session & Growth Hub", color: "from-cyan-600 to-indigo-600", category: "regular", attendees: "3.4K" }
+  { id: "vyGX5VI7CKA", title: "11:10 Live", time: "11:10 AM", desc: "Morning Live Interactive Session & Growth Hub", color: "from-cyan-600 to-indigo-600", category: "regular", attendees: "3.4K" },
+  { id: "7GcQiksM3k0", title: "7 Live", time: "07:00 PM", desc: "Evening Live Townhall & Interactive Session", color: "from-emerald-500 to-cyan-600", category: "regular", attendees: "3.6K" }
 ];
 
 const THEMES = [
